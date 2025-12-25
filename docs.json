@@ -9,6 +9,20 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
+    "global": {
+      "anchors": [
+        {
+          "anchor": "GitHub",
+          "icon": "github",
+          "href": "https://github.com/your-org/ryb"
+        },
+        {
+          "anchor": "Live App",
+          "icon": "play",
+          "href": "https://ryb-read-your-bible-1089710632544.us-west1.run.app/"
+        }
+      ]
+    },
     "tabs": [
       {
         "tab": "Product",
@@ -103,21 +117,7 @@
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "GitHub",
-          "href": "https://github.com/your-org/ryb",
-          "icon": "github"
-        },
-        {
-          "anchor": "Live App",
-          "href": "https://app.ryb.com",
-          "icon": "play"
-        }
-      ]
-    }
+    ]
   },
   "logo": {
     "light": "/logo/light.svg",
