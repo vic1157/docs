@@ -1,0 +1,228 @@
+---
+title: 'ActivityPanel Component'
+description: 'Drag gestures with Framer Motion and mode switching'
+icon: 'panel-bottom'
+---
+
+## Component Overview
+
+The ActivityPanel is a draggable bottom sheet that provides access to AI features during Bible reading.
+
+**File**: `src/components/ActivityPanel.tsx`
+
+---
+
+## Complete Implementation (Simplified)
+
+```tsx ActivityPanel.tsx
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { GripHorizontal, Play, MessageSquare, HelpCircle, BookOpen } from "lucide-react";
+
+interface ActivityPanelProps {
+  isActive?: boolean;
+  onStartScroll?: () => void;
+}
+
+export default function ActivityPanel({ 
+  isActive = false, 
+  onStartScroll 
+}: ActivityPanelProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [readingTime, setReadingTime] = useState(0);
+
+  const handleDragEnd = (event: any, info: any) => {
+    const dragThreshold = 50; // pixels
+
+    if (info.offset.y > dragThreshold) {
+      // Dragged down - collapse
+      setExpanded(false);
+    } else if (info.offset.y < -dragThreshold) {
+      // Dragged up - expand  
+      setExpanded(true);
+    }
+  };
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <motion.div
+      drag="y"
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={0}
+      onDragEnd={handleDragEnd}
+      animate={{ y: expanded ? -200 : 0 }}
+      transition={{ type: "spring", damping: 30, stiffness: 300 }}
+      className="fixed bottom-16 left-0 right-0 z-40 bg-card border-t border-border"
+    >
+      {/* Drag Handle */}
+      <div 
+        onClick={toggleExpanded}
+        className="flex items-center justify-center py-2 cursor-pointer"
+      >
+        <GripHorizontal className="h-5 w-5 text-muted-foreground" />
+      </div>
+
+      {/* Panel Content */}
+      <div className="px-4 pb-4 space-y-3">
+        {!isActive ? (
+          // Inactive Mode
+          expanded ? (
+            <>
+              <Button onClick={onStartScroll} className="w-full">
+                <Play className="mr-2 h-4 w-4" />
+                Start Scroll
+              </Button>
+              <Button variant="outline" className="w-full">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Chapter Context
+              </Button>
+              <Button variant="outline" className="w-full">
+                <MessageSquare className="mr-2 h-4 w-4" />
+                Ask Leo
+              </Button>
+            </>
+          ) : (
+            <p className="text-sm text-center text-muted-foreground">
+              Tap to expand
+            </p>
+          )
+        ) : (
+          // Active Mode
+          <>
+            {!expanded && (
+              <div className="text-center text-sm">
+                Reading: {Math.floor(readingTime / 60)}:{(readingTime % 60).toString().padStart(2, '0')}
+              </div>
+            )}
+            
+            {expanded && (
+              <>
+                <Button variant="outline" className="w-full">
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Chapter Context
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  Add Question
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Ask AI
+                </Button>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+```
+
+---
+
+## Framer Motion Configuration
+
+### Drag Gesture Setup
+
+```tsx
+<motion.div
+  drag="y"                              // Vertical drag only
+  dragConstraints={{ top: 0, bottom: 0 }}  // No overshoot
+  dragElastic={0}                       // No elastic bounce
+  onDragEnd={handleDragEnd}             // Handle drag completion
+/>
+```
+
+### Spring Animation
+
+```tsx
+animate={{ y: expanded ? -200 : 0 }}
+transition={{ 
+  type: "spring",
+  damping: 30,        // Less oscillation
+  stiffness: 300      // Faster animation
+}}
+```
+
+---
+
+## Drag Logic
+
+```typescript
+const handleDragEnd = (event: any, info: any) => {
+  const dragThreshold = 50;
+
+  // info.offset.y is the total drag distance
+  if (info.offset.y > dragThreshold) {
+    setExpanded(false);  // Dragged down
+  } else if (info.offset.y < -dragThreshold) {
+    setExpanded(true);   // Dragged up
+  }
+  // If drag is less than threshold, panel returns to current state
+};
+```
+
+---
+
+## Panel States
+
+<Tabs>
+  <Tab title="Inactive + Contracted">
+    - Shows minimal UI
+    - "Tap to expand" message
+    - Drag handle visible
+  </Tab>
+
+  <Tab title="Inactive + Expanded">
+    - Start Scroll button
+    - Chapter Context button
+    - Ask Leo button
+  </Tab>
+
+  <Tab title="Active + Contracted">
+    - Reading timer display
+    - Drag handle visible
+  </Tab>
+
+  <Tab title="Active + Expanded">
+    - Chapter Context button
+    - Add Question button
+    - Ask AI button
+    - Reading timer (if desired)
+  </Tab>
+</Tabs>
+
+---
+
+## Usage
+
+```tsx Read.tsx
+import ActivityPanel from "@/components/ActivityPanel";
+
+export default function Read() {
+  const [isReadingActive, setIsReadingActive] = useState(false);
+
+  const handleStartScroll = () => {
+    setIsReadingActive(true);
+  };
+
+  return (
+    <div>
+      {/* Bible content */}
+      <ActivityPanel 
+        isActive={isReadingActive}
+        onStartScroll={handleStartScroll}
+      />
+    </div>
+  );
+}
+```
+
+<Card title="Animations Guide" icon="wand-magic-sparkles" href="/dev/animations">
+  Learn more about Framer Motion patterns
+</Card>

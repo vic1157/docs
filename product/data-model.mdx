@@ -1,0 +1,193 @@
+---
+title: 'Data Model'
+description: 'TypeScript interfaces and data structures'
+icon: 'database'
+---
+
+## Scroll System
+
+### Scroll Interface
+
+```typescript
+interface Scroll {
+  id: string;
+  title: string;
+  scriptureReference: string;
+  duration: string;
+  timestamp: string;
+  hasQuiz: boolean;
+  quizScore?: { correct: number; total: number };
+  summary: string;
+  questions: Question[];
+  reflection: string;
+  readingTime: string;
+}
+```
+
+<ResponseField name="id" type="string" required>
+  Unique identifier for the scroll
+</ResponseField>
+
+<ResponseField name="title" type="string" required>
+  Display title for the scroll
+</ResponseField>
+
+<ResponseField name="scriptureReference" type="string" required>
+  Bible passage reference (e.g., "Jeremiah 29:10-14")
+</ResponseField>
+
+<ResponseField name="hasQuiz" type="boolean" required>
+  Whether a quiz exists for this scroll
+</ResponseField>
+
+<ResponseField name="quizScore" type="object">
+  Optional quiz score with `correct` and `total` properties
+</ResponseField>
+
+### Question Interface
+
+```typescript
+interface Question {
+  id: string;
+  type: 'understanding' | 'discussion';
+  text: string;
+  verseReference?: string;
+}
+```
+
+---
+
+## Quiz System
+
+### Quiz Interface
+
+```typescript
+interface Quiz {
+  id: string;
+  scrollId: string;
+  title: string;
+  questions: QuizQuestion[];
+}
+```
+
+### QuizQuestion Interface
+
+```typescript
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation?: string;
+  verseReference?: string;
+}
+```
+
+<ResponseField name="correctAnswer" type="number" required>
+  Zero-based index of the correct option
+</ResponseField>
+
+---
+
+## Chat System
+
+### Chat Interface
+
+```typescript
+interface Chat {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+### ChatMessage Interface
+
+```typescript
+interface ChatMessage {
+  id: string;
+  sender: 'user' | 'leo';
+  content: string;
+  timestamp: string;
+}
+```
+
+---
+
+## Bible Content
+
+### Chapter Interface
+
+```typescript
+interface Chapter {
+  id: string;
+  book: string;
+  chapter: number;
+  title: string;
+  sections: Section[];
+}
+```
+
+### Section Interface
+
+```typescript
+interface Section {
+  title?: string;
+  verses: Verse[];
+}
+```
+
+### Verse Interface
+
+```typescript
+interface Verse {
+  number: number;
+  text: string;
+}
+```
+
+---
+
+## Daily Bread
+
+### DailyVerse Interface
+
+```typescript
+interface DailyVerse {
+  text: string;
+  reference: string;
+}
+```
+
+### DailyScrollData Interface
+
+```typescript
+interface DailyScrollData {
+  title: string;
+  passage: string;
+  description: string;
+  estimatedTime: string;
+  verseCount: number;
+}
+```
+
+---
+
+## Theme System
+
+### Theme Type
+
+```typescript
+type Theme = "light" | "dark";
+
+interface ThemeContextType {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+```
+
+<Card title="Implementation Details" icon="code" href="/dev/state-management">
+  See how these interfaces are used in the application
+</Card>

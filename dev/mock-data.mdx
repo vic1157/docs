@@ -1,0 +1,213 @@
+---
+title: 'Mock Data'
+description: 'Current mock data structures and sample content'
+icon: 'database'
+---
+
+## Overview
+
+All data in RYB is currently mocked in-memory. No backend API integration yet.
+
+<Warning>
+  **Prototype Status:** All data resets on page refresh. Backend integration is planned.
+</Warning>
+
+---
+
+## Sample Scrolls (3)
+
+Located in `ScriptureExplorer.tsx` and `ScrollDetail.tsx`:
+
+```typescript
+const mockScrolls: Scroll[] = [
+  {
+    id: "1",
+    title: "Understanding God's Love",
+    scriptureReference: "1 John 4:7-21",
+    duration: "15 min",
+    timestamp: "2 hours ago",
+    hasQuiz: true,
+    quizScore: { correct: 4, total: 5 },
+    summary: "This passage explores the nature of God's love...",
+    questions: [
+      { id: "q1", type: "understanding", text: "What is the source of love?" },
+      { id: "q2", type: "discussion", text: "How can we show God's love to others?" }
+    ],
+    reflection: "God's love is not just an emotion but an action...",
+    readingTime: "15 min"
+  },
+  // ... 2 more scrolls
+];
+```
+
+---
+
+## Sample Chats (2)
+
+Located in `Chat.tsx` and `ScriptureExplorer.tsx`:
+
+```typescript
+const mockChats: Chat[] = [
+  {
+    id: "1",
+    title: "Understanding Prayer",
+    messages: [
+      {
+        id: "m1",
+        sender: "user",
+        content: "What does Jesus teach about prayer?",
+        timestamp: new Date().toISOString()
+      },
+      {
+        id: "m2",
+        sender: "leo",
+        content: "Jesus teaches several important principles about prayer...",
+        timestamp: new Date().toISOString()
+      }
+    ],
+    createdAt: "2024-01-15",
+    updatedAt: "2024-01-15"
+  },
+  // ... 1 more chat
+];
+```
+
+---
+
+## Sample Bible Chapters (5)
+
+Located in `Read.tsx`:
+
+```typescript
+const chapters: Chapter[] = [
+  {
+    id: "matthew-5",
+    book: "Matthew",
+    chapter: 5,
+    title: "The Sermon on the Mount",
+    sections: [
+      {
+        title: "The Beatitudes",
+        verses: [
+          { number: 1, text: "Now when Jesus saw the crowds, he went up..." },
+          { number: 2, text: "Blessed are the poor in spirit..." },
+          // ... 22 more verses
+        ]
+      }
+    ]
+  },
+  // John 3, Psalm 23, Genesis 1, Romans 8
+];
+```
+
+---
+
+## Sample Quizzes
+
+Located in `ScrollDetail.tsx` and `DailyQuiz.tsx`:
+
+```typescript
+const mockQuiz: Quiz = {
+  id: "quiz1",
+  scrollId: "1",
+  title: "1 John 4:7-21 Quiz",
+  questions: [
+    {
+      id: "q1",
+      question: "According to verse 8, what is God?",
+      options: ["Light", "Love", "Truth", "Peace"],
+      correctAnswer: 1,
+      explanation: "Verse 8 clearly states 'God is love.'",
+      verseReference: "1 John 4:8"
+    },
+    // ... 4 more questions
+  ]
+};
+```
+
+---
+
+## Daily Bread Content
+
+### Daily Verse (Jeremiah 29:11)
+
+```typescript OurDailyBread.tsx
+const DAILY_VERSE: DailyVerse = {
+  text: '"For I know the plans I have for you," declares the LORD...',
+  reference: "Jeremiah 29:11"
+};
+```
+
+### Daily Scroll (Jeremiah 29:10-14)
+
+```typescript
+const DAILY_SCROLL: DailyScrollData = {
+  title: "God's Plans for Your Future",
+  passage: "Jeremiah 29:10-14",
+  description: "Discover God's promises of hope and a future...",
+  estimatedTime: "3-4 min",
+  verseCount: 5
+};
+```
+
+### Daily Quiz (5 questions on Jeremiah 29)
+
+```typescript DailyQuiz.tsx
+const quizQuestions: QuizQuestion[] = [
+  {
+    id: 1,
+    question: "According to verse 11, what kind of plans does God have?",
+    options: [
+      "Plans to harm",
+      "Plans to prosper and give hope",
+      "Plans to test",
+      "Plans to judge"
+    ],
+    correctAnswer: 1,
+    explanation: "Verse 11 says God's plans are 'to prosper you...'",
+    verseReference: "Jeremiah 29:11"
+  },
+  // ... 4 more questions
+];
+```
+
+---
+
+## Persona Types (5)
+
+Located in `SurveyResults.tsx`:
+
+```typescript
+const personas = [
+  {
+    id: "shepherd",
+    name: "The Shepherd",
+    subtitle: "Disciplined Guide",
+    description: "Consistent, structured, leadership-oriented"
+  },
+  {
+    id: "seeker",
+    name: "The Seeker",
+    subtitle: "Curious Explorer",
+    description: "Question-driven, analytical, knowledge-hungry"
+  },
+  // The Vessel, The Builder, The Rooted
+];
+```
+
+---
+
+## Where Mock Data Lives
+
+| Feature | File Location | Data Structure |
+|---------|--------------|----------------|
+| Scrolls | `ScriptureExplorer.tsx`, `ScrollDetail.tsx` | `mockScrolls[]` |
+| Chats | `Chat.tsx`, `ScriptureExplorer.tsx` | `mockChats[]` |
+| Bible | `Read.tsx` | `chapters[]` |
+| Quizzes | `ScrollDetail.tsx`, `DailyQuiz.tsx` | `mockQuiz`, `quizQuestions[]` |
+| Daily Bread | `OurDailyBread.tsx`, `DailyScroll.tsx`, `DailyQuiz.tsx` | Various constants |
+| Personas | `SurveyResults.tsx` | `personas[]` |
+
+<Card title="Future Backend" icon="server" href="/dev/future-backend">
+  View planned backend integration requirements
+</Card>

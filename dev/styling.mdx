@@ -1,0 +1,233 @@
+---
+title: 'Styling System'
+description: 'Tailwind CSS, Shadcn UI, and theming'
+icon: 'paintbrush'
+---
+
+## Styling Stack
+
+<CardGroup cols={3}>
+  <Card title="Tailwind CSS" icon="wind">
+    Utility-first CSS framework
+  </Card>
+  <Card title="Shadcn UI" icon="palette">
+    Component library on Radix UI
+  </Card>
+  <Card title="CSS Variables" icon="code">
+    HSL-based design tokens
+  </Card>
+</CardGroup>
+
+---
+
+## Tailwind Configuration
+
+### Design System
+
+```javascript tailwind.config.js
+export default {
+  darkMode: ["class"],
+  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  theme: {
+    extend: {
+      colors: {
+        // Semantic color tokens
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        primary: "hsl(var(--primary))",
+        secondary: "hsl(var(--secondary))",
+        muted: "hsl(var(--muted))",
+        accent: "hsl(var(--accent))",
+        // ... more tokens
+      }
+    }
+  }
+}
+```
+
+---
+
+## CSS Variables (Design Tokens)
+
+### Light Theme
+
+```css index.css
+:root {
+  --background: 234 20% 98%;
+  --foreground: 234 40% 25%;
+  --primary: 234 40% 25%;
+  --secondary: 45 80% 65%;
+  --muted: 234 20% 90%;
+  --accent: 45 100% 50%;
+  /* ... more tokens */
+}
+```
+
+### Dark Theme
+
+```css
+.dark {
+  --background: 234 20% 8%;
+  --foreground: 234 50% 60%;
+  --primary: 234 50% 60%;
+  --secondary: 45 80% 65%;
+  --muted: 234 20% 15%;
+  --accent: 45 100% 60%;
+  /* ... more tokens */
+}
+```
+
+<Note>
+  Dark mode uses 8% background lightness for a middle-ground darkness
+</Note>
+
+---
+
+## Shadcn UI Components
+
+### Component Library (46 components)
+
+<AccordionGroup>
+  <Accordion title="Layout & Navigation">
+    - Accordion
+    - Tabs
+    - Breadcrumb
+    - Dropdown Menu
+    - Sheet (Drawer)
+  </Accordion>
+
+  <Accordion title="Forms & Input">
+    - Button
+    - Input
+    - Textarea
+    - Checkbox
+    - Radio Group
+    - Select
+    - Switch
+  </Accordion>
+
+  <Accordion title="Data Display">
+    - Card
+    - Table
+    - Badge
+    - Avatar
+    - Progress
+    - Separator
+  </Accordion>
+
+  <Accordion title="Feedback">
+    - Alert
+    - Dialog
+    - Toast
+    - Popover
+    - Tooltip
+  </Accordion>
+</AccordionGroup>
+
+### Usage Pattern
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+export function MyComponent() {
+  return (
+    <Card className="p-6">
+      <Button variant="default" size="lg">
+        Click me
+      </Button>
+    </Card>
+  );
+}
+```
+
+---
+
+## Component Styling Patterns
+
+### Semantic Color Usage
+
+```tsx
+// Background and foreground
+<div className="bg-background text-foreground">
+
+// Primary action
+<Button className="bg-primary text-primary-foreground">
+
+// Secondary/muted content
+<p className="text-muted-foreground">
+
+// Accent/highlight
+<div className="border-accent bg-accent/10">
+```
+
+### Responsive Layouts
+
+```tsx
+// Mobile-first approach
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
+// Max-width containers
+<div className="max-w-4xl mx-auto px-4">
+
+// Responsive spacing
+<div className="space-y-4 md:space-y-6 lg:space-y-8">
+```
+
+### Card-based UI
+
+```tsx
+<Card className="rounded-2xl border border-border/50 bg-card/50 backdrop-blur">
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    {/* Content */}
+  </CardContent>
+</Card>
+```
+
+---
+
+## Icon Integration
+
+### Lucide React (0.462.0)
+
+```tsx
+import { BookOpen, Heart, Check } from "lucide-react";
+
+<Button>
+  <BookOpen className="h-4 w-4 mr-2" />
+  Read Now
+</Button>
+```
+
+---
+
+## Utility Helper
+
+### cn() Function
+
+```typescript lib/utils.ts
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+**Usage:**
+
+```tsx
+<div className={cn(
+  "base-classes",
+  condition && "conditional-classes",
+  className // Props override
+)} />
+```
+
+<Card title="Theme System" icon="moon" href="/dev/theme-system">
+  View the light/dark mode implementation
+</Card>

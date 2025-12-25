@@ -1,0 +1,109 @@
+---
+title: 'Bible Reading Engine'
+description: 'Interactive Bible reader with translations, controls, and Activity Panel'
+icon: 'book-open'
+---
+
+## Reading Interface
+
+The Bible reading engine at `/read` provides a clean, distraction-free reading experience.
+
+<CardGroup cols={3}>
+  <Card title="Translation Switcher" icon="language">
+    NLT, NIV, ESV, KJV, MSG
+  </Card>
+  <Card title="Font Size Control" icon="text-size">
+    Small, Medium, Large
+  </Card>
+  <Card title="Chapter Navigation" icon="list">
+    Dropdown selector
+  </Card>
+</CardGroup>
+
+## Sample Content
+
+Currently includes 5 complete chapters:
+
+| Book | Chapter | Title | Verses |
+|------|---------|-------|--------|
+| Matthew | 5 | The Sermon on the Mount | 24 |
+| John | 3 | Jesus and Nicodemus | 21 |
+| Psalm | 23 | The LORD is My Shepherd | 6 |
+| Genesis | 1 | The Creation | 31 |
+| Romans | 8 | Life in the Spirit | 24 |
+
+<Warning>
+  **Static Content:** Using sample chapters. Bible API integration not yet implemented.
+</Warning>
+
+---
+
+## Activity Panel
+
+Interactive bottom sheet panel for accessing AI features while reading.
+
+<Tabs>
+  <Tab title="Inactive Mode">
+    **Reference Reading** (not tracked)
+
+    **Contracted:**
+    - Minimal view with drag handle
+
+    **Extended:**
+    - Start Scroll button
+    - Chapter Context button
+    - Ask Leo button
+  </Tab>
+
+  <Tab title="Active Mode">
+    **Tracked Reading** (Scroll in progress)
+
+    **Contracted:**
+    - Reading timer display
+
+    **Extended:**
+    - Chapter Context button
+    - Add Question button
+    - Ask AI button
+    - Reading timer
+    - Bookmark button
+  </Tab>
+</Tabs>
+
+## Panel Features
+
+<AccordionGroup>
+  <Accordion title="Drag Gestures" icon="hand">
+    - Powered by Framer Motion
+    - Smooth spring animations
+    - 50px drag threshold
+    - Tap handle to toggle states
+    - Swipe down to collapse
+  </Accordion>
+
+  <Accordion title="State Management" icon="toggle-on">
+    - Active/Inactive reading modes
+    - Expanded/Contracted panel states
+    - Timer for active sessions
+    - Visual feedback with borders and separators
+  </Accordion>
+
+  <Accordion title="Z-Index Hierarchy" icon="layer-group">
+    - Panel: z-40
+    - Footer navigation: z-50
+    - Ensures navigation always accessible
+  </Accordion>
+</AccordionGroup>
+
+## "Start Scroll" Flow
+
+When user clicks "Start Scroll":
+1. Panel transitions to Active mode
+2. Reading timer begins
+3. AI action buttons appear
+4. User can add questions and reflections
+5. Session tracked until completion
+
+<Card title="Implementation" icon="code" href="/dev/examples/activity-panel">
+  View the Activity Panel implementation with Framer Motion
+</Card>

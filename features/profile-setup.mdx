@@ -1,0 +1,68 @@
+---
+title: 'Profile & Reading Goals'
+description: 'Profile onboarding and reading goal configuration'
+icon: 'user-gear'
+---
+
+## Profile Onboarding
+
+Accessible via `/profile?onboarding=true`, this 2-step modal guides users through:
+
+<Steps>
+  <Step title="Upload Profile Photo">
+    Profile picture upload interface
+
+    <Note>Photo upload to backend not yet implemented</Note>
+  </Step>
+  <Step title="Add Personal Testimony">
+    Text area for sharing faith journey
+
+    <Note>Testimony saving to database not yet implemented</Note>
+  </Step>
+</Steps>
+
+**After Completion:**
+- Marks completion in localStorage (`profileOnboardingComplete`)
+- Triggers onboarding progress update
+- Navigates to home page
+
+---
+
+## Reading Goals Onboarding
+
+Accessible via `/reading-goals?onboarding=true`, this 2-step modal configures:
+
+<Steps>
+  <Step title="Set Reading Frequency">
+    Choose from four options:
+    - **Daily** - Read every day
+    - **5x/week** - Read 5 days per week
+    - **3x/week** - Read 3 days per week
+    - **Weekly** - Read once per week
+  </Step>
+  <Step title="Enable Notifications">
+    Configure push notifications with time picker
+
+    <Note>Notification system not yet implemented</Note>
+  </Step>
+</Steps>
+
+**After Completion:**
+- Saves preferences to localStorage
+- Marks completion (`readingGoalsOnboardingComplete`)
+- Navigates to home page
+
+---
+
+## URL Parameter Pattern
+
+Both flows use the `?onboarding=true` parameter to trigger modal display:
+
+```typescript
+const searchParams = new URLSearchParams(location.search);
+const isOnboarding = searchParams.get("onboarding") === "true";
+```
+
+<Card title="Onboarding Pattern" icon="route" href="/dev/onboarding-pattern">
+  View the complete implementation pattern
+</Card>

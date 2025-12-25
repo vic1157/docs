@@ -1,0 +1,154 @@
+---
+title: 'Component Library'
+description: 'Custom components and Shadcn UI catalog'
+icon: 'blocks'
+---
+
+## Component Architecture
+
+RYB uses a two-tier component system:
+
+<CardGroup cols={2}>
+  <Card title="Custom Components" icon="code">
+    8 application-specific components
+  </Card>
+  <Card title="Shadcn UI" icon="palette">
+    46 pre-built UI primitives
+  </Card>
+</CardGroup>
+
+---
+
+## Custom Components (8)
+
+### Activity Panel
+- **File**: `components/ActivityPanel.tsx`
+- **Purpose**: Draggable bottom sheet for Bible reading features
+- **Key Features**: Framer Motion drag gestures, Active/Inactive modes
+- **Props**: `isActive?: boolean, onStartScroll?: () => void`
+
+### OnboardingProgress
+- **File**: `components/OnboardingProgress.tsx`
+- **Purpose**: Task tracker widget for onboarding completion
+- **Key Features**: localStorage integration, custom event listeners
+- **Props**: None (self-managing)
+
+### OurDailyBread
+- **File**: `components/OurDailyBread.tsx`
+- **Purpose**: Daily spiritual journey component
+- **Key Features**: Sequential unlock pattern, daily reset logic
+- **Props**: `scrollCompleted?: boolean, quizCompleted?: boolean`
+
+### Footer
+- **File**: `components/Footer.tsx`
+- **Purpose**: App navigation bar
+- **Key Features**: Custom Create button, 5-item navigation
+- **Props**: None
+
+### ScrollListItem
+- **File**: `components/ScrollListItem.tsx`
+- **Purpose**: Reusable scroll card
+- **Props**: `scroll: Scroll, onClick: () => void`
+
+### ChatListItem
+- **File**: `components/ChatListItem.tsx`
+- **Purpose**: Reusable chat card
+- **Props**: `chat: Chat, onClick: () => void`
+
+### ChatMessage
+- **File**: `components/ChatMessage.tsx`
+- **Purpose**: Message bubble component
+- **Props**: `message: ChatMessage`
+
+### QuizQuestion
+- **File**: `components/QuizQuestion.tsx`
+- **Purpose**: Quiz question with options
+- **Props**: `question, selectedAnswer, onAnswerSelect, showCorrect?`
+
+---
+
+## Shadcn UI Components (46)
+
+### Layout & Structure
+- Accordion
+- Card
+- Separator
+- Tabs
+- Sheet (Drawer)
+
+### Forms & Input
+- Button
+- Input
+- Textarea
+- Checkbox
+- Radio Group
+- Select
+- Switch
+- Label
+- Form
+
+### Navigation
+- Dropdown Menu
+- Command
+- Breadcrumb
+
+### Feedback & Overlays
+- Alert
+- Dialog
+- Popover
+- Tooltip
+- Toast
+- Sonner
+
+### Data Display
+- Table
+- Badge
+- Avatar
+- Progress
+- Calendar
+- Carousel
+
+## Usage Examples
+
+<CodeGroup>
+
+```tsx Button Variants
+import { Button } from "@/components/ui/button";
+
+<Button variant="default">Default</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="destructive">Destructive</Button>
+```
+
+```tsx Card Component
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+  </CardHeader>
+  <CardContent>
+    Content goes here
+  </CardContent>
+</Card>
+```
+
+```tsx Dialog
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+
+<Dialog>
+  <DialogTrigger asChild>
+    <Button>Open Dialog</Button>
+  </DialogTrigger>
+  <DialogContent>
+    Dialog content
+  </DialogContent>
+</Dialog>
+```
+
+</CodeGroup>
+
+<Card title="Styling System" icon="paintbrush" href="/dev/styling">
+  Learn about styling Shadcn UI components
+</Card>

@@ -1,0 +1,103 @@
+---
+title: 'Data Persistence'
+description: 'localStorage patterns and reset logic'
+icon: 'save'
+---
+
+## localStorage Strategy
+
+All application state is persisted to localStorage for instant access and offline capability.
+
+---
+
+## Complete localStorage Keys
+
+| Key | Type | Purpose | Reset Logic |
+|-----|------|---------|-------------|
+| `theme` | "light" \| "dark" | Theme preference | Never resets |
+| `profileOnboardingComplete` | "true" \| null | Profile setup | Never resets |
+| `readingGoalsOnboardingComplete` | "true" \| null | Goals setup | Never resets |
+| `scrollWalkthroughComplete` | "true" \| null | Walkthrough done | Never resets |
+| `dailyBreadDate` | string (date) | Reset tracking | Updates daily |
+| `dailyScrollCompleted` | "true" \| null | Daily scroll | Resets daily |
+| `dailyQuizCompleted` | "true" \| null | Daily quiz | Resets daily |
+
+---
+
+## Daily Reset Pattern
+
+```typescript Index.tsx
+const today = new Date().toDateString();
+const storedDate = localStorage.getItem('dailyBreadDate');
+
+if (storedDate !== today) {
+  // New day detected - reset completion states
+  localStorage.setItem('dailyBreadDate', today);
+  localStorage.removeItem('dailyScrollCompleted');
+  localStorage.removeItem('dailyQuizCompleted');
+}
+```
+
+<Tip>
+  Uses `.toDateString()` for consistent date comparison across timezones
+</Tip>
+
+---
+
+## Onboarding Persistence
+
+```typescript
+// Save completion
+localStorage.setItem("profileOnboardingComplete", "true");
+
+// Check status
+const isComplete = localStorage.getItem("profileOnboardingComplete") === "true";
+
+// Initialize state
+const [completed, setCompleted] = useState(
+  localStorage.getItem("profileOnboardingComplete") === "true"
+);
+```
+
+---
+
+## Theme Persistence
+
+```typescript use-theme.tsx
+// Load on init
+const stored = localStorage.getItem("theme") as Theme;
+if (stored) return stored;
+
+// Save on change
+useEffect(() => {
+  localStorage.setItem("theme", theme);
+}, [theme]);
+```
+
+---
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Type Safety">
+    - Always cast to expected types
+    - Check for null/undefined
+    - Use default values
+  </Accordion>
+
+  <Accordion title="Synchronization">
+    - Update state AND storage together
+    - Use effect hooks for persistence
+    - Listen for storage events (cross-tab)
+  </Accordion>
+
+  <Accordion title="Cleanup">
+    - Remove items when resetting
+    - Don't leave stale data
+    - Clear on logout (when implemented)
+  </Accordion>
+</AccordionGroup>
+
+<Card title="State Management" icon="database" href="/dev/state-management">
+  See how localStorage integrates with state management
+</Card>

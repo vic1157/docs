@@ -1,0 +1,173 @@
+---
+title: 'Quiz System'
+description: 'Create, take, and review quizzes on Bible passages'
+icon: 'graduation-cap'
+---
+
+## Overview
+
+The quiz system allows users to test their Scripture knowledge through interactive multiple-choice quizzes generated from scrolls or custom passages.
+
+<CardGroup cols={3}>
+  <Card title="Quiz Creation" icon="wand-magic-sparkles">
+    Generate from scrolls or custom ranges
+  </Card>
+  <Card title="Quiz Taking" icon="pen-to-square">
+    Interactive multi-question interface
+  </Card>
+  <Card title="Quiz Results" icon="chart-simple">
+    Detailed review with explanations
+  </Card>
+</CardGroup>
+
+---
+
+## Quiz Selection (`/new-quiz`)
+
+<Tabs>
+  <Tab title="From Previous Scroll">
+    - Browse list of completed scrolls
+    - Click scroll to start quiz
+    - Pagination for scroll navigation
+    - Quiz status badges show previous attempts
+  </Tab>
+
+  <Tab title="Custom Scripture Range">
+    Define your own quiz passage:
+    - **Book selector** (dropdown)
+    - **Chapter selector** (dropdown)
+    - **Verse range** (start and end)
+    - **Question count** (number input)
+    - **Quiz types** (Understanding, Application, Memory - checkboxes)
+  </Tab>
+</Tabs>
+
+The page features:
+- Two-section layout with "OR" divider
+- Card components for visual separation
+- Responsive spacing (duration below reference on mobile)
+
+---
+
+## Quiz Taking Interface
+
+### Progress Tracking
+
+- Question counter (e.g., "Question 3 of 5")
+- Progress bar showing completion
+- Previous/Next navigation buttons
+- Navigation disabled until answer selected
+
+### Question Interface
+
+<Accordion title="Custom Options Design">
+  - Button-based options (not radio buttons)
+  - **Letter prefixes**: A, B, C, D in circular badges
+  - Selection states with distinct visual feedback
+  - Background, border, and text color changes
+  - Hover scale animations
+  - Smooth transitions
+</Accordion>
+
+<Accordion title="Question Details">
+  - Question text with verse references
+  - Multiple choice options (typically 4)
+  - Letter indicators for each option
+  - Clear selection state
+</Accordion>
+
+---
+
+## Quiz Results
+
+After completion, users see comprehensive results:
+
+<Steps>
+  <Step title="Score Display">
+    Large percentage score prominently displayed
+  </Step>
+
+  <Step title="Review Your Answers">
+    Per-question review section with:
+    - ✅ **Correct answers**: Green background, green border, checkmark
+    - ❌ **Incorrect answers**: Red background, red border, X mark
+    - Explanation boxes with verse references
+    - Your answer vs correct answer highlighted
+  </Step>
+
+  <Step title="Next Steps">
+    - "Retake Quiz" button to try again
+    - Return to Scripture Explorer
+    - View related scroll (if from scroll)
+  </Step>
+</Steps>
+
+### Uniform Results Style
+
+<Tip>
+  Quiz results use consistent styling across the application (Daily Quiz and Scroll quizzes)
+</Tip>
+
+---
+
+## Integration with Scrolls
+
+Quizzes are tightly integrated with the Scroll system:
+
+```
+Scroll Detail View
+  ↓
+  Quiz Status: Shows previous score if taken
+  ↓
+  "Take Quiz" button → /scroll/:id?startQuiz=true
+  ↓
+  Quiz interface within scroll context
+  ↓
+  Results saved to scroll metadata
+```
+
+<Accordion title="Quiz Status Badges">
+  Scrolls display quiz information:
+  - "Quiz Available" - Not yet attempted
+  - "Score: 80%" - Previous attempt with percentage
+  - Color-coded badges (green for passed, yellow for needs improvement)
+</Accordion>
+
+---
+
+## Data Structure
+
+```typescript
+interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;  // Zero-based index
+  explanation?: string;
+  verseReference?: string;
+}
+
+interface Quiz {
+  id: string;
+  scrollId: string;
+  title: string;
+  questions: QuizQuestion[];
+}
+```
+
+---
+
+## Current Implementation
+
+<Warning>
+  **Mock Data:** Quiz questions are pre-defined. Quiz generation not yet implemented.
+</Warning>
+
+- Sample quizzes for demonstration
+- All UI interactions fully functional
+- Scoring and results calculation working
+- No backend integration yet
+
+<Card title="Daily Quiz" icon="calendar-day" href="/features/our-daily-bread">
+  See quizzes in the Daily Bread journey
+</Card>

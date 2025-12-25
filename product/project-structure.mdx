@@ -1,0 +1,89 @@
+---
+title: 'Project Structure'
+description: 'Understanding the RYB codebase organization'
+icon: 'folder-tree'
+---
+
+## Directory Overview
+
+```
+src/
+├── pages/               # Route components (24 pages)
+├── components/          # Reusable components (8 custom + 46 UI)
+├── hooks/               # Custom React hooks (3 hooks)
+├── lib/                 # Utility functions
+└── App.tsx              # Main routing configuration
+```
+
+## Pages Directory
+
+<Accordion title="Authentication Pages">
+  - `Loading.tsx` - Initial loading screen
+  - `Login.tsx` - Login page
+  - `SignUp.tsx` - Registration page
+  - `VerifyEmail.tsx` - Email verification
+  - `EmailConfirmed.tsx` - Confirmation success
+</Accordion>
+
+<Accordion title="Onboarding Pages">
+  - `Survey.tsx` - 10-question spiritual assessment
+  - `SurveyResults.tsx` - Persona reveal
+  - `Profile.tsx` - User profile + onboarding
+  - `ReadingGoals.tsx` - Reading goals + notifications
+  - `ScrollWalkthrough.tsx` - Interactive scroll concept tour
+  - `DemoScroll.tsx` - Hands-on demo scroll experience
+</Accordion>
+
+<Accordion title="Core Feature Pages">
+  - `Index.tsx` - Home page with stats and daily bread
+  - `Read.tsx` - Bible reading engine + ActivityPanel
+  - `Community.tsx` - Community preview (coming soon)
+  - `Paywall.tsx` - Subscription/pricing
+</Accordion>
+
+<Accordion title="Scripture Interaction Pages">
+  - `ScriptureExplorer.tsx` - Scripture Explorer hub
+  - `Chat.tsx` - AI chat interface with Leo
+  - `NewQuiz.tsx` - Quiz selection page
+  - `ScrollDetail.tsx` - Scroll detail + quiz taking
+  - `DailyScroll.tsx` - Daily Bread scroll page
+  - `DailyQuiz.tsx` - Daily Bread quiz page
+</Accordion>
+
+## Components Directory
+
+<Accordion title="Custom Components (8)">
+  - `Footer.tsx` - App footer navigation
+  - `OnboardingProgress.tsx` - Task tracker widget
+  - `OurDailyBread.tsx` - Daily spiritual journey component
+  - `ActivityPanel.tsx` - Draggable AI features panel
+  - `ScrollListItem.tsx` - Scroll list card component
+  - `ChatListItem.tsx` - Chat list card component
+  - `ChatMessage.tsx` - Chat message bubble
+  - `QuizQuestion.tsx` - Quiz question component
+</Accordion>
+
+<Accordion title="Shadcn UI Components (46)">
+  Located in `components/ui/` - includes dialogs, forms, navigation, data display, and feedback components built on Radix UI primitives.
+</Accordion>
+
+## Hooks Directory
+
+<Accordion title="Custom Hooks (3)">
+  - `use-theme.tsx` - Theme provider and hook
+  - `use-mobile.tsx` - Mobile detection hook
+  - `use-toast.ts` - Toast notification hook
+</Accordion>
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `App.tsx` | Main routing configuration (31 routes) |
+| `main.tsx` | Application entry point |
+| `index.css` | Design system & Tailwind configuration |
+| `vite.config.ts` | Vite build configuration |
+
+<Card title="Data Structures" icon="database" href="/product/data-model">
+  View TypeScript interfaces and data models
+</Card>

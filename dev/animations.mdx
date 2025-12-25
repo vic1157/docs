@@ -1,0 +1,183 @@
+---
+title: 'Animations'
+description: 'Framer Motion patterns for gestures and transitions'
+icon: 'wand-magic-sparkles'
+---
+
+## Animation Library
+
+RYB uses **Framer Motion 12.23.24** for all animations and gesture interactions.
+
+<Card title="Framer Motion" icon="box" href="https://www.framer.com/motion/">
+  Advanced animation library for React
+</Card>
+
+---
+
+## Drag Gesture Pattern (ActivityPanel)
+
+The ActivityPanel showcases advanced drag interactions:
+
+<CodeGroup>
+
+```tsx Basic Setup
+import { motion } from "framer-motion";
+
+<motion.div
+  drag="y"
+  dragConstraints={{ top: 0, bottom: 0 }}
+  dragElastic={0}
+  onDragEnd={handleDragEnd}
+>
+  {/* Panel content */}
+</motion.div>
+```
+
+```typescript Drag Handler
+const handleDragEnd = (event: any, info: any) => {
+  const dragThreshold = 50;
+
+  if (info.offset.y > dragThreshold) {
+    // Dragged down - collapse
+    setExpanded(false);
+  } else if (info.offset.y < -dragThreshold) {
+    // Dragged up - expand
+    setExpanded(true);
+  }
+};
+```
+
+</CodeGroup>
+
+### Spring Animations
+
+```tsx
+<motion.div
+  animate={{ y: expanded ? 0 : 100 }}
+  transition={{ 
+    type: "spring",
+    damping: 30,
+    stiffness: 300
+  }}
+/>
+```
+
+<Accordion title="Spring Parameters">
+  - **damping: 30** - Controls oscillation (higher = less bounce)
+  - **stiffness: 300** - Controls speed (higher = faster)
+  - **type: "spring"** - Natural, physics-based animation
+</Accordion>
+
+---
+
+## Component Transitions
+
+### Expand/Collapse Pattern
+
+```tsx DemoScroll.tsx
+<motion.div
+  initial={{ height: 0, opacity: 0 }}
+  animate={{ 
+    height: expanded ? "auto" : 0,
+    opacity: expanded ? 1 : 0
+  }}
+  transition={{ duration: 0.3 }}
+>
+  {/* Expandable content */}
+</motion.div>
+```
+
+### Fade In Pattern
+
+```tsx
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  {/* Content */}
+</motion.div>
+```
+
+---
+
+## Hover & Tap Interactions
+
+### Button Hover
+
+```tsx
+<motion.button
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  transition={{ type: "spring", stiffness: 400 }}
+>
+  Click me
+</motion.button>
+```
+
+### Quiz Option Selection (QuizQuestion.tsx)
+
+```tsx
+<motion.button
+  whileHover={{ scale: 1.02 }}
+  transition={{ duration: 0.2 }}
+  className={cn(
+    "transition-all duration-200",
+    selected && "bg-primary/10 border-primary"
+  )}
+>
+  {option}
+</motion.button>
+```
+
+---
+
+## Tailwind CSS Transitions
+
+For simple transitions, use Tailwind classes:
+
+```tsx
+<div className="transition-all duration-300 hover:bg-accent">
+  {/* Smooth background transition */}
+</div>
+
+<button className="transition-colors hover:text-primary">
+  {/* Color transition */}
+</button>
+```
+
+---
+
+## Animation Best Practices
+
+<AccordionGroup>
+  <Accordion title="Performance">
+    - Use `transform` and `opacity` for 60fps animations
+    - Avoid animating `width`, `height`, `top`, `left`
+    - Use `will-change` sparingly
+  </Accordion>
+
+  <Accordion title="Gesture Handling">
+    - Set drag constraints to prevent overflow
+    - Use threshold values for intentional gestures
+    - Provide visual feedback during interaction
+  </Accordion>
+
+  <Accordion title="Accessibility">
+    - Respect `prefers-reduced-motion`
+    - Keep animations under 500ms
+    - Don't rely solely on animation for feedback
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Key Implementation Examples
+
+<Card title="Activity Panel" icon="panel-bottom" href="/dev/examples/activity-panel">
+  View the complete drag gesture implementation with Framer Motion
+</Card>
+
+<Card title="Our Daily Bread" icon="bread-slice" href="/dev/examples/daily-bread">
+  See the sequential unlock animation pattern
+</Card>

@@ -1,0 +1,188 @@
+---
+title: 'OnboardingProgress Component'
+description: 'Complete implementation with event listeners and localStorage'
+icon: 'list-check'
+---
+
+## Component Overview
+
+The OnboardingProgress component tracks user onboarding completion with real-time updates via localStorage and custom events.
+
+**File**: `src/components/OnboardingProgress.tsx`
+
+---
+
+## Complete Implementation
+
+```tsx OnboardingProgress.tsx
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Check } from "lucide-react";
+
+interface OnboardingTask {
+  id: string;
+  title: string;
+  description: string;
+  route: string;
+  localStorageKey: string;
+}
+
+const tasks: OnboardingTask[] = [
+  {
+    id: "profile",
+    title: "Complete Your Profile",
+    description: "Upload a photo and add your testimony",
+    route: "/profile?onboarding=true",
+    localStorageKey: "profileOnboardingComplete"
+  },
+  {
+    id: "goals",
+    title: "Set Your Reading Goals",
+    description: "Choose frequency and enable notifications",
+    route: "/reading-goals?onboarding=true",
+    localStorageKey: "readingGoalsOnboardingComplete"
+  },
+  {
+    id: "walkthrough",
+    title: "RYB Scroll Walkthrough",
+    description: "Learn how Scrolls work",
+    route: "/scroll-walkthrough",
+    localStorageKey: "scrollWalkthroughComplete"
+  }
+];
+
+export default function OnboardingProgress() {
+  const navigate = useNavigate();
+  const [completedTasks, setCompletedTasks] = useState<boolean[]>([]);
+
+  // Check completion status from localStorage
+  const checkTasksCompletion = () => {
+    const completion = tasks.map(task => 
+      localStorage.getItem(task.localStorageKey) === "true"
+    );
+    setCompletedTasks(completion);
+  };
+
+  useEffect(() => {
+    // Initial check
+    checkTasksCompletion();
+
+    // Listen for storage changes (cross-tab)
+    const handleStorageChange = () => {
+      checkTasksCompletion();
+    };
+
+    // Listen for custom onboarding completion event
+    const handleOnboardingComplete = () => {
+      checkTasksCompletion();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("onboardingComplete", handleOnboardingComplete);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("onboardingComplete", handleOnboardingComplete);
+    };
+  }, []);
+
+  const completedCount = completedTasks.filter(Boolean).length;
+  const progress = (completedCount / tasks.length) * 100;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Get Started with RYB</CardTitle>
+        <CardDescription>
+          Complete these tasks to unlock the full experience
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Progress</span>
+            <span className="font-medium">
+              {completedCount} of {tasks.length} completed
+            </span>
+          </div>
+          <Progress value={progress} />
+        </div>
+
+        {/* Task List */}
+        <div className="space-y-2">
+          {tasks.map((task, index) => (
+            <Button
+              key={task.id}
+              onClick={() => navigate(task.route)}
+              disabled={completedTasks[index]}
+              variant={completedTasks[index] ? "ghost" : "outline"}
+              className="w-full justify-start h-auto p-4"
+            >
+              <div className="flex items-start gap-3 w-full">
+                {completedTasks[index] ? (
+                  <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                ) : (
+                  <div className="h-5 w-5 rounded-full border-2 border-muted-foreground flex-shrink-0 mt-0.5" />
+                )}
+                <div className="flex-1 text-left">
+                  <p className="font-medium">{task.title}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {task.description}
+                  </p>
+                </div>
+              </div>
+            </Button>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## Key Features
+
+<AccordionGroup>
+  <Accordion title="Event Listeners">
+    Listens for both `storage` (cross-tab changes) and `onboardingComplete` (same-tab changes) events
+  </Accordion>
+
+  <Accordion title="localStorage Integration">
+    Checks completion status from localStorage on mount and when events fire
+  </Accordion>
+
+  <Accordion title="Real-time Updates">
+    UI updates immediately when tasks are completed without page refresh
+  </Accordion>
+
+  <Accordion title="Progress Calculation">
+    Dynamically calculates completion percentage for progress bar
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Usage
+
+```tsx Index.tsx
+import OnboardingProgress from "@/components/OnboardingProgress";
+
+export default function Index() {
+  return (
+    <div>
+      <OnboardingProgress />
+      {/* Other home page content */}
+    </div>
+  );
+}
+```
+
+<Card title="Onboarding Pattern" icon="route" href="/dev/onboarding-pattern">
+  Learn about the complete onboarding flow pattern
+</Card>

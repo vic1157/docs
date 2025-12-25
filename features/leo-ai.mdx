@@ -1,0 +1,129 @@
+---
+title: 'Leo AI Chat'
+description: 'Interactive conversation with Leo, your AI Bible companion'
+icon: 'brain'
+---
+
+## Meet Leo
+
+Leo is RYB's branded AI assistant, designed to provide Bible-related guidance, answer questions, and enhance your Scripture study.
+
+<Note>
+  **Previous Name:** Leo was formerly named "Eli" and was renamed during development.
+</Note>
+
+## Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Bible Q&A" icon="messages">
+    Instant answers to Scripture questions
+  </Card>
+  <Card title="Reading Guidance" icon="map">
+    Personalized reading recommendations
+  </Card>
+  <Card title="Quiz Generation" icon="circle-question">
+    Creates quizzes from any passage
+  </Card>
+  <Card title="Scroll Summaries" icon="file-lines">
+    AI-generated chapter summaries
+  </Card>
+  <Card title="Chapter Context" icon="book-open">
+    Historical and theological analysis
+  </Card>
+  <Card title="Insights" icon="lightbulb">
+    Personalized spiritual insights
+  </Card>
+</CardGroup>
+
+<Warning>
+  **Requires Denarii:** Leo functionality requires premium currency. See [Monetization](/features/monetization) for details.
+</Warning>
+
+---
+
+## Chat Interface
+
+Available at `/chat` with support for existing chats via `/chat?id={chatId}`.
+
+<Tabs>
+  <Tab title="Features">
+    - Message history display (user and Leo messages)
+    - Real-time text input with send button
+    - Auto-scroll to latest message
+    - Enter key to send messages
+    - Clean left/right aligned message bubbles
+  </Tab>
+
+  <Tab title="Mobile Optimization">
+    - Fixed layout (`fixed inset-0`) for true full-screen
+    - Proper keyboard handling
+    - Safe-area padding: `env(safe-area-inset-bottom)`
+    - 16px minimum font size to prevent iOS auto-zoom
+    - Input anchored to bottom regardless of keyboard state
+  </Tab>
+</Tabs>
+
+## Welcome Message
+
+New conversations start with Leo's introduction:
+
+> "Hi! I'm Leo, your AI Bible companion. I'm here to help you explore Scripture, answer your questions, and deepen your faith journey. How can I assist you today?"
+
+---
+
+## Current Implementation
+
+<Accordion title="Mock Responses">
+  - 1-second delay to simulate API call
+  - Predefined responses for demonstration
+  - No actual AI integration yet
+</Accordion>
+
+<Accordion title="Message Flow">
+  1. User types message and clicks send
+  2. User message added to chat history
+  3. 1-second delay
+  4. Leo's response appears
+  5. Auto-scroll to latest message
+</Accordion>
+
+<Accordion title="Chat Management">
+  - Support for multiple chat sessions
+  - URL parameter for loading specific chats
+  - Chat history preserved in mock data
+</Accordion>
+
+---
+
+## Technical Details
+
+### ChatMessage Component
+
+```typescript
+interface ChatMessage {
+  id: string;
+  sender: 'user' | 'leo';
+  content: string;
+  timestamp: string;
+}
+```
+
+Message bubbles styled based on sender:
+- **User messages**: Right-aligned
+- **Leo messages**: Left-aligned with AI branding
+
+### Chat Interface
+
+```typescript
+interface Chat {
+  id: string;
+  title: string;
+  messages: ChatMessage[];
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
+<Card title="Mobile Optimization" icon="mobile" href="/dev/mobile-optimization">
+  View the mobile chat pattern implementation
+</Card>

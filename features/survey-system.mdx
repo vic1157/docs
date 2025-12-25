@@ -1,0 +1,78 @@
+---
+title: 'Survey System'
+description: 'Spiritual assessment and persona assignment'
+icon: 'clipboard-list'
+---
+
+## 10-Question Spiritual Assessment
+
+The survey determines each user's Biblical persona through questions covering:
+
+<AccordionGroup>
+  <Accordion title="Relationship with the Bible">
+    Current engagement level and familiarity
+  </Accordion>
+  <Accordion title="Preferred Reading Times">
+    When users are most likely to read
+  </Accordion>
+  <Accordion title="Spiritual Content Preferences">
+    Types of passages that resonate most
+  </Accordion>
+  <Accordion title="Reading Challenges">
+    Common obstacles and pain points
+  </Accordion>
+  <Accordion title="Community Engagement">
+    Preferences for social and group features
+  </Accordion>
+  <Accordion title="Motivations and Goals">
+    Personal spiritual objectives
+  </Accordion>
+</AccordionGroup>
+
+## Five Persona Types
+
+<CardGroup cols={2}>
+  <Card title="The Shepherd" icon="user-tie">
+    **Disciplined Guide**
+
+    Consistent, structured, leadership-oriented
+  </Card>
+  <Card title="The Seeker" icon="magnifying-glass">
+    **Curious Explorer**
+
+    Question-driven, analytical, knowledge-hungry
+  </Card>
+  <Card title="The Vessel" icon="heart">
+    **Devoted Servant**
+
+    Heart-centered, service-oriented, compassionate
+  </Card>
+  <Card title="The Builder" icon="users">
+    **Community Connector**
+
+    Relationship-focused, collaborative, encouraging
+  </Card>
+  <Card title="The Rooted" icon="tree">
+    **Grounded Believer**
+
+    Traditional, steady, faith-anchored
+  </Card>
+</CardGroup>
+
+## Survey Results
+
+After completion, users see:
+- Assigned persona with icon and description
+- Personalized strengths
+- Tailored recommendations
+- Biblical anchor verse
+
+<Warning>
+  **Current Status:** Persona calculation logic not yet implemented. Results currently show "The Shepherd" for all users as mock data.
+</Warning>
+
+## Technical Implementation
+
+- Required answers before progressing to next question
+- Progress indicator shows completion status
+- Results page navigates to paywall after reveal

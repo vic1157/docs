@@ -1,0 +1,206 @@
+---
+title: 'Scrolls'
+description: 'Bible reading activity tracking and reflection system'
+icon: 'scroll'
+---
+
+## What is a Scroll?
+
+A "Scroll" is an object that tracks active Bible reading sessions. Think of it as a reading activity record that captures your engagement with Scripture.
+
+<CardGroup cols={2}>
+  <Card title="Reading Range" icon="book-bookmark">
+    Start and end points of passage
+  </Card>
+  <Card title="Activity Tracking" icon="list-check">
+    Questions asked during reading
+  </Card>
+  <Card title="Session Duration" icon="clock">
+    Total reading time tracked
+  </Card>
+  <Card title="Reflections" icon="pen">
+    Personal notes and thoughts
+  </Card>
+</CardGroup>
+
+---
+
+## Scroll Lifecycle
+
+<Steps>
+  <Step title="Initiate Scroll">
+    User clicks "Start Scroll" in the ActivityPanel while reading the Bible
+
+    - Panel transitions from Inactive to Active mode
+    - Reading timer begins
+    - Session tracking starts
+  </Step>
+
+  <Step title="Active Reading">
+    During the reading session:
+    - Timer runs continuously
+    - User can add questions via Activity Panel
+    - AI features become available (Chapter Context, Ask AI)
+  </Step>
+
+  <Step title="Capture Activity">
+    User engages with Scripture:
+    - Add Understanding questions
+    - Add Discussion questions
+    - Use AI features for deeper insight
+  </Step>
+
+  <Step title="Add Reflection">
+    After completing the reading:
+    - Write personal reflections in textarea
+    - Capture insights and applications
+    - Character count display
+  </Step>
+
+  <Step title="Set Visibility">
+    Choose who can see this scroll:
+    - **Private**: Only you
+    - **Friends Only**: You and your friends
+    - **Public**: Everyone
+  </Step>
+
+  <Step title="Complete Scroll">
+    Save the scroll to your history
+    - Appears in Scripture Explorer
+    - Available for quiz creation
+    - Can be reviewed later
+  </Step>
+</Steps>
+
+---
+
+## Scroll Detail View
+
+Available at `/scroll/:id`, showing comprehensive scroll information:
+
+<Tabs>
+  <Tab title="Scroll Information">
+    **Default View**
+
+    - Scroll header (title, reference, duration, time)
+    - Expandable AI-generated summary
+    - Questions section (Understanding & Discussion)
+    - Personal reflection display
+    - Quiz status and score (if applicable)
+  </Tab>
+
+  <Tab title="Quiz Taking">
+    **When `?startQuiz=true` parameter present**
+
+    - Full quiz interface
+    - Question-by-question navigation
+    - Progress tracking
+    - Submit for results
+  </Tab>
+
+  <Tab title="Quiz Results">
+    **After quiz completion**
+
+    - Score percentage
+    - Per-question review
+    - Color-coded feedback
+    - Explanations with verse references
+    - Retake option
+  </Tab>
+</Tabs>
+
+---
+
+## Scroll Components
+
+### ScrollListItem
+
+Reusable card component used in Scripture Explorer:
+
+```typescript
+interface ScrollListItemProps {
+  scroll: Scroll;
+  onClick: () => void;
+}
+```
+
+Displays:
+- Scroll icon and title
+- Scripture reference
+- Duration and reading time
+- Quiz status badge
+- Timestamp
+
+---
+
+## Data Structure
+
+```typescript
+interface Scroll {
+  id: string;
+  title: string;
+  scriptureReference: string;
+  duration: string;
+  timestamp: string;
+  hasQuiz: boolean;
+  quizScore?: { correct: number; total: number };
+  summary: string;
+  questions: Question[];
+  reflection: string;
+  readingTime: string;
+}
+
+interface Question {
+  id: string;
+  type: 'understanding' | 'discussion';
+  text: string;
+  verseReference?: string;
+}
+```
+
+<Card title="Data Model" icon="database" href="/product/data-model">
+  View complete TypeScript interfaces
+</Card>
+
+---
+
+## Demo Scroll
+
+A fully interactive demo scroll is available at `/demo-scroll` for hands-on learning:
+
+<AccordionGroup>
+  <Accordion title="Demo Features">
+    - Complete scroll interface with all features
+    - Expandable AI summary with feedback buttons
+    - Questions section with popover explanations
+    - Editable personal reflection textarea
+    - Visibility settings (radio buttons)
+    - "Upload Scroll" button with success message
+  </Accordion>
+
+  <Accordion title="Interactive Elements">
+    - Expand/collapse summary and questions
+    - Edit reflection text
+    - Change visibility settings
+    - Navigate back to home anytime
+    - Clear indication that no data is saved
+  </Accordion>
+</AccordionGroup>
+
+<Card title="Scroll Walkthrough" icon="graduation-cap" href="/features/scroll-walkthrough">
+  Learn about Scrolls through the 8-step interactive tour
+</Card>
+
+---
+
+## Current Implementation
+
+<Note>
+  **Fully Functional UI** with mock data. Backend integration and AI-generated summaries not yet implemented.
+</Note>
+
+- All UI interactions working
+- localStorage for demo purposes
+- Sample scrolls in Scripture Explorer
+- Quiz integration functional
+- Reflection editing and visibility settings working

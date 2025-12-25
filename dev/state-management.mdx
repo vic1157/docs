@@ -1,0 +1,256 @@
+---
+title: 'State Management'
+description: 'localStorage patterns and cross-component communication'
+icon: 'database'
+---
+
+## State Strategy
+
+RYB uses a pragmatic approach to state management:
+
+<CardGroup cols={3}>
+  <Card title="React Hooks" icon="react">
+    useState, useEffect for local state
+  </Card>
+  <Card title="localStorage" icon="hard-drive">
+    Persistent data storage
+  </Card>
+  <Card title="Custom Events" icon="bolt">
+    Cross-component communication
+  </Card>
+</CardGroup>
+
+---
+
+## localStorage Patterns
+
+### Onboarding State
+
+<CodeGroup>
+
+```typescript Saving Completion
+// Profile onboarding completion
+localStorage.setItem("profileOnboardingComplete", "true");
+
+// Reading goals completion
+localStorage.setItem("readingGoalsOnboardingComplete", "true");
+
+// Scroll walkthrough completion
+localStorage.setItem("scrollWalkthroughComplete", "true");
+```
+
+```typescript Checking Status
+// Check if user completed profile onboarding
+const isProfileComplete = localStorage.getItem("profileOnboardingComplete") === "true";
+
+// Initialize state from localStorage
+const [isComplete, setIsComplete] = useState(
+  localStorage.getItem("profileOnboardingComplete") === "true"
+);
+```
+
+</CodeGroup>
+
+### Daily Bread State
+
+<CodeGroup>
+
+```typescript Daily Reset Logic
+const today = new Date().toDateString();
+const storedDate = localStorage.getItem('dailyBreadDate');
+
+if (storedDate !== today) {
+  // New day detected - reset completion states
+  localStorage.setItem('dailyBreadDate', today);
+  localStorage.removeItem('dailyScrollCompleted');
+  localStorage.removeItem('dailyQuizCompleted');
+}
+```
+
+```typescript Reading State
+// Mark daily scroll as completed
+localStorage.setItem('dailyScrollCompleted', 'true');
+
+// Check completion status
+const scrollCompleted = localStorage.getItem('dailyScrollCompleted') === 'true';
+```
+
+</CodeGroup>
+
+### Theme State
+
+<CodeGroup>
+
+```typescript Theme Persistence
+// Save theme preference
+localStorage.setItem("theme", theme);
+
+// Load theme on init
+const stored = localStorage.getItem("theme") as Theme;
+if (stored) return stored;
+
+// Fallback to system preference
+return window.matchMedia("(prefers-color-scheme: dark)").matches
+  ? "dark"
+  : "light";
+```
+
+```typescript React Hook
+useEffect(() => {
+  localStorage.setItem("theme", theme);
+
+  if (theme === "dark") {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}, [theme]);
+```
+
+</CodeGroup>
+
+---
+
+## Custom Event System
+
+### Event Dispatching
+
+```typescript
+// Dispatch custom event after onboarding completion
+localStorage.setItem("profileOnboardingComplete", "true");
+window.dispatchEvent(new Event("onboardingComplete"));
+```
+
+### Event Listening
+
+```typescript
+useEffect(() => {
+  const handleStorageChange = () => {
+    // Re-check localStorage and update component state
+    const tasks = [
+      localStorage.getItem("profileOnboardingComplete") === "true",
+      localStorage.getItem("readingGoalsOnboardingComplete") === "true",
+      localStorage.getItem("scrollWalkthroughComplete") === "true"
+    ];
+    setCompletedTasks(tasks);
+  };
+
+  // Listen for both storage changes and custom events
+  window.addEventListener("storage", handleStorageChange);
+  window.addEventListener("onboardingComplete", handleStorageChange);
+
+  return () => {
+    window.removeEventListener("storage", handleStorageChange);
+    window.removeEventListener("onboardingComplete", handleStorageChange);
+  };
+}, []);
+```
+
+---
+
+## React Router State
+
+### Navigation State
+
+```typescript
+// Navigate with state
+navigate("/home", {
+  state: { dailyScrollCompleted: true }
+});
+
+// Access state in destination component
+const location = useLocation();
+const { dailyScrollCompleted } = location.state || {};
+```
+
+### URL Parameters
+
+```typescript
+// Check for onboarding parameter
+const searchParams = new URLSearchParams(location.search);
+const isOnboarding = searchParams.get("onboarding") === "true";
+
+// Navigate with parameter
+navigate("/profile?onboarding=true");
+```
+
+---
+
+## State Synchronization
+
+### Pattern: localStorage → Component State → UI
+
+<Steps>
+  <Step title="Initialize from localStorage">
+    ```typescript
+    const [theme, setTheme] = useState(() => {
+      return localStorage.getItem("theme") || "light";
+    });
+    ```
+  </Step>
+
+  <Step title="Update both state and storage">
+    ```typescript
+    const toggleTheme = () => {
+      const newTheme = theme === "light" ? "dark" : "light";
+      setTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    };
+    ```
+  </Step>
+
+  <Step title="Listen for changes">
+    ```typescript
+    useEffect(() => {
+      const handleChange = () => {
+        setTheme(localStorage.getItem("theme") || "light");
+      };
+
+      window.addEventListener("storage", handleChange);
+      return () => window.removeEventListener("storage", handleChange);
+    }, []);
+    ```
+  </Step>
+</Steps>
+
+---
+
+## Complete localStorage Keys
+
+| Key | Type | Purpose |
+|-----|------|---------|
+| `theme` | "light" \| "dark" | Theme preference |
+| `profileOnboardingComplete` | "true" \| null | Profile setup status |
+| `readingGoalsOnboardingComplete` | "true" \| null | Reading goals status |
+| `scrollWalkthroughComplete` | "true" \| null | Walkthrough completion |
+| `dailyBreadDate` | string (date) | Current date for reset logic |
+| `dailyScrollCompleted` | "true" \| null | Daily scroll status |
+| `dailyQuizCompleted` | "true" \| null | Daily quiz status |
+
+---
+
+## Why This Approach?
+
+<Tip>
+  **Simple and Effective**: For a prototype with primarily client-side state, this approach avoids the complexity of Redux/Zustand while maintaining clean patterns.
+</Tip>
+
+### Benefits
+
+- **No external dependencies** - Uses built-in browser APIs
+- **Instant persistence** - No network calls required
+- **Type-safe** - TypeScript interfaces for all data structures
+- **Debuggable** - Easy to inspect in DevTools
+- **Fast** - Synchronous reads and writes
+
+### Future Considerations
+
+As the app scales with backend integration:
+- Move user data to database
+- Use React Query for server state
+- Keep localStorage for UI preferences
+- Consider Zustand for complex client state
+
+<Card title="Data Persistence" icon="save" href="/dev/data-persistence">
+  View complete localStorage documentation
+</Card>

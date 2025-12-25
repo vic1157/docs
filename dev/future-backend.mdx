@@ -1,0 +1,282 @@
+---
+title: 'Future Backend Requirements'
+description: 'Planned API endpoints and backend integration'
+icon: 'server'
+---
+
+<Note>
+  This page outlines backend requirements for moving from prototype to production.
+</Note>
+
+---
+
+## Required Backend Services
+
+<CardGroup cols={2}>
+  <Card title="User Authentication" icon="user-lock">
+    Login, signup, session management
+  </Card>
+  <Card title="Bible API" icon="book">
+    Scripture content delivery
+  </Card>
+  <Card title="AI Services" icon="brain">
+    Leo chatbot, summaries, insights
+  </Card>
+  <Card title="Data Storage" icon="database">
+    User data, scrolls, progress
+  </Card>
+</CardGroup>
+
+---
+
+## Planned API Endpoints
+
+### Authentication
+
+```
+POST   /api/auth/signup
+POST   /api/auth/login
+POST   /api/auth/logout
+POST   /api/auth/refresh
+GET    /api/auth/verify-email
+POST   /api/auth/reset-password
+```
+
+### User Profile
+
+```
+GET    /api/user/profile
+PUT    /api/user/profile
+POST   /api/user/photo
+PUT    /api/user/testimony
+PUT    /api/user/reading-goals
+GET    /api/user/preferences
+PUT    /api/user/preferences
+```
+
+### Bible Content
+
+```
+GET    /api/bible/books
+GET    /api/bible/chapters/:book/:chapter
+GET    /api/bible/verses/:reference
+GET    /api/bible/search?query=...
+GET    /api/bible/translations
+```
+
+**Recommended Bible APIs:**
+- ESV API (https://api.esv.org)
+- Bible Gateway API
+- YouVersion API
+- API.Bible (https://scripture.api.bible)
+
+### Scrolls
+
+```
+POST   /api/scrolls                    # Create new scroll
+GET    /api/scrolls                    # List user's scrolls
+GET    /api/scrolls/:id                # Get scroll details
+PUT    /api/scrolls/:id                # Update scroll
+DELETE /api/scrolls/:id                # Delete scroll
+POST   /api/scrolls/:id/questions      # Add question
+PUT    /api/scrolls/:id/reflection     # Update reflection
+PUT    /api/scrolls/:id/visibility     # Change visibility
+```
+
+### Quizzes
+
+```
+POST   /api/quizzes                    # Generate quiz
+GET    /api/quizzes/:id                # Get quiz
+POST   /api/quizzes/:id/submit         # Submit answers
+GET    /api/quizzes/:id/results        # Get results
+POST   /api/quizzes/:id/retake         # Retake quiz
+```
+
+### Leo AI Chat
+
+```
+POST   /api/chat                       # Start new chat
+GET    /api/chat/:id                   # Get chat history
+POST   /api/chat/:id/message           # Send message
+DELETE /api/chat/:id                   # Delete chat
+```
+
+### Community
+
+```
+POST   /api/friends/request            # Send friend request
+PUT    /api/friends/:id/accept         # Accept request
+GET    /api/friends                    # List friends
+GET    /api/friends/activity           # Friend activity feed
+POST   /api/groups                     # Create group
+GET    /api/groups/:id                 # Get group
+POST   /api/groups/:id/join            # Join group
+POST   /api/reflections/:id/comment    # Comment on reflection
+POST   /api/encouragements             # Send encouragement
+```
+
+### Monetization
+
+```
+POST   /api/payments/create-intent     # Start payment
+POST   /api/payments/confirm           # Confirm payment
+GET    /api/subscription/status        # Get subscription
+PUT    /api/subscription/cancel        # Cancel subscription
+GET    /api/denarii/balance            # Get Denarii balance
+POST   /api/denarii/purchase           # Buy Denarii
+POST   /api/denarii/spend              # Spend Denarii
+```
+
+---
+
+## Data Storage Requirements
+
+### User Data
+- Profile information (name, email, photo)
+- Preferences (theme, reading goals, notifications)
+- Authentication credentials (hashed passwords)
+- Subscription status and Denarii balance
+
+### Scrolls & Activity
+- Reading sessions (scrolls)
+- Questions asked during reading
+- Personal reflections
+- Quiz attempts and scores
+- Reading streaks and statistics
+
+### Social Data
+- Friend relationships
+- Group memberships
+- Comments and encouragements
+- Activity feed items
+
+---
+
+## AI Integration Requirements
+
+### Leo AI Chatbot
+
+**Recommended Services:**
+- OpenAI GPT-4 API
+- Anthropic Claude API
+- Custom fine-tuned model
+
+**Requirements:**
+- Context-aware responses
+- Scripture knowledge base
+- Conversation history
+- Rate limiting per user
+
+### AI-Generated Content
+
+- **Scroll Summaries**: Chapter summaries for each scroll
+- **Quiz Generation**: Auto-generate questions from passages
+- **Insights**: Personalized spiritual insights
+- **Chapter Context**: Historical and theological analysis
+
+---
+
+## Notification System
+
+```
+POST   /api/notifications/subscribe    # Subscribe to push
+PUT    /api/notifications/preferences  # Update preferences
+POST   /api/notifications/send         # Send notification
+```
+
+**Notification Types:**
+- Reading reminders (based on user schedule)
+- Friend activity (new reflections, comments)
+- Streak milestones
+- New content available
+
+---
+
+## File Storage
+
+**Requirements:**
+- Profile photo uploads
+- Future: Audio recordings, image uploads in reflections
+
+**Recommended Services:**
+- AWS S3
+- Cloudinary
+- Azure Blob Storage
+
+---
+
+## Database Schema (Suggested)
+
+### Users
+- id, email, password_hash, name, photo_url
+- created_at, updated_at, last_login
+- subscription_status, denarii_balance
+
+### Scrolls
+- id, user_id, title, scripture_reference
+- summary, reflection, visibility
+- reading_time, created_at
+
+### Questions
+- id, scroll_id, text, type, verse_reference
+
+### Quizzes
+- id, scroll_id, user_id, score
+- created_at, completed_at
+
+### QuizQuestions
+- id, quiz_id, question, options (JSON)
+- correct_answer, explanation
+
+### Chats
+- id, user_id, title
+- created_at, updated_at
+
+### ChatMessages
+- id, chat_id, sender, content, timestamp
+
+### Friendships
+- id, user_id, friend_id, status
+- created_at, accepted_at
+
+---
+
+## Implementation Priority
+
+<Steps>
+  <Step title="Phase 1: Authentication & Users">
+    - User signup/login
+    - Profile management
+    - Password reset
+  </Step>
+
+  <Step title="Phase 2: Core Features">
+    - Bible API integration
+    - Scrolls CRUD
+    - Reading progress tracking
+  </Step>
+
+  <Step title="Phase 3: AI Integration">
+    - Leo chatbot
+    - AI summaries
+    - Quiz generation
+  </Step>
+
+  <Step title="Phase 4: Monetization">
+    - Payment processing
+    - Subscription management
+    - Denarii system
+  </Step>
+
+  <Step title="Phase 5: Social Features">
+    - Friends system
+    - Groups
+    - Activity feed
+    - Notifications
+  </Step>
+</Steps>
+
+<Card title="Mock Data" icon="database" href="/dev/mock-data">
+  View current mock data structures
+</Card>

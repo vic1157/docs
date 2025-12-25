@@ -1,0 +1,103 @@
+---
+title: 'Scripture Explorer'
+description: 'Central hub for scrolls, AI chat, and quiz features'
+icon: 'compass'
+---
+
+## Overview
+
+Scripture Explorer serves as the central hub for accessing all scripture interaction features. Accessible via the middle "Create" button in the Footer navigation.
+
+<CardGroup cols={2}>
+  <Card title="New Chat" icon="message-plus" href="/features/leo-ai">
+    Start a conversation with Leo AI
+  </Card>
+  <Card title="New Quiz" icon="circle-question" href="/features/quiz-system">
+    Create a quiz from any scripture passage
+  </Card>
+  <Card title="All Scrolls" icon="scroll">
+    Browse your reading activity
+  </Card>
+  <Card title="All Chats" icon="messages">
+    View conversation history
+  </Card>
+</CardGroup>
+
+## Main Features
+
+<Tabs>
+  <Tab title="Action Buttons">
+    Two prominent Card-based action buttons:
+    - **New Chat**: Starts fresh conversation with Leo
+    - **New Quiz**: Navigate to quiz creation page
+  </Tab>
+
+  <Tab title="Tabbed Content">
+    Toggle between two views:
+    - **Scrolls Tab**: List of all scrolls with quiz status
+    - **Chats Tab**: Conversation history with last messages
+  </Tab>
+</Tabs>
+
+## Mock Data
+
+Currently includes sample data for demonstration:
+- **3 sample scrolls** with varying quiz statuses
+- **2 sample chats** with Leo conversation previews
+
+<Warning>
+  All data is mocked in-memory. Backend API integration not yet implemented.
+</Warning>
+
+---
+
+## Navigation Flow
+
+```
+Footer "Create" Button → /scripture-explorer
+    ├── New Chat → /chat (new conversation)
+    ├── New Quiz → /new-quiz → select scroll → /scroll/:id?startQuiz=true
+    ├── All Scrolls → click scroll → /scroll/:id
+    └── All Chats → click chat → /chat?id={chatId}
+```
+
+---
+
+## Components
+
+<AccordionGroup>
+  <Accordion title="ScrollListItem">
+    Reusable scroll card component displaying:
+    - Scroll icon and title
+    - Scripture reference
+    - Duration and timestamp
+    - Quiz status badge (if applicable)
+  </Accordion>
+
+  <Accordion title="ChatListItem">
+    Reusable chat card component showing:
+    - Chat title
+    - Last message preview
+    - Timestamp
+  </Accordion>
+</AccordionGroup>
+
+## Design Updates
+
+Recent redesign includes:
+- **Enhanced Header**: Compass icon with title/subtitle layout
+- **Tabbed Content**: Clean Tabs component for view toggling
+- **Action Cards**: Card-based buttons instead of button grid
+- **Empty States**: Helpful messaging when no data exists
+
+<CardGroup cols={2}>
+  <Card title="Leo AI Chat" icon="brain" href="/features/leo-ai">
+    Learn about the AI chat interface
+  </Card>
+  <Card title="Quiz System" icon="graduation-cap" href="/features/quiz-system">
+    Explore quiz creation and taking
+  </Card>
+  <Card title="Scrolls" icon="scroll" href="/features/scrolls">
+    Understand the Scroll system
+  </Card>
+</CardGroup>

@@ -1,0 +1,207 @@
+---
+title: 'Mobile Optimization'
+description: 'Viewport handling and keyboard management for mobile devices'
+icon: 'mobile'
+---
+
+## Mobile-First Approach
+
+RYB is optimized for mobile devices with careful attention to viewport handling, keyboard interactions, and touch gestures.
+
+---
+
+## Viewport Meta Tag
+
+### Prevent Auto-Zoom on Input Focus
+
+```html index.html
+<meta 
+  name="viewport" 
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+/>
+```
+
+<Warning>
+  `user-scalable=no` prevents iOS from auto-zooming when focusing inputs. Use with 16px minimum font size on inputs.
+</Warning>
+
+---
+
+## Keyboard Handling (Chat Interface)
+
+### Fixed Layout Pattern
+
+The Chat page uses a fixed layout that prevents shifting when the mobile keyboard appears:
+
+```tsx Chat.tsx
+<div className="fixed inset-0 flex flex-col bg-background">
+  {/* Header - fixed height */}
+  <header className="flex-shrink-0">
+    <h1>Chat with Leo</h1>
+  </header>
+
+  {/* Messages - scrollable */}
+  <div className="flex-1 overflow-y-auto min-h-0">
+    {messages.map(msg => <ChatMessage key={msg.id} message={msg} />)}
+  </div>
+
+  {/* Input - anchored to bottom */}
+  <div className="flex-shrink-0" style={{
+    paddingBottom: "max(12px, env(safe-area-inset-bottom))"
+  }}>
+    <Input placeholder="Ask Leo..." />
+  </div>
+</div>
+```
+
+### Key Techniques
+
+<Accordion Title>
+  <Accordion title="Fixed Inset-0">
+    - Uses `fixed inset-0` instead of `h-screen`
+    - Creates true full-screen app shell
+    - Doesn't shift when browser chrome appears/disappears
+  </Accordion>
+
+  <Accordion title="Flex Column Layout">
+    - Header: `flex-shrink-0` (fixed height)
+    - Messages: `flex-1 overflow-y-auto min-h-0` (fills space, scrollable)
+    - Input: `flex-shrink-0` (anchored to bottom)
+  </Accordion>
+
+  <Accordion title="Safe Area Insets">
+    - `env(safe-area-inset-bottom)` for notched devices
+    - `max(12px, env(...))` ensures minimum padding
+    - Prevents content hiding behind home indicator
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Global CSS Optimizations
+
+```css index.css
+/* Prevent text size adjustment */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Full height layout */
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Prevent overscroll bounce */
+body {
+  overscroll-behavior: none;
+}
+
+/* Prevent iOS auto-zoom on inputs */
+input, textarea, select {
+  font-size: max(16px, 1rem);
+}
+
+/* Support for dynamic viewport height */
+@supports (height: 100dvh) {
+  html, body {
+    height: 100dvh;
+  }
+}
+```
+
+---
+
+## Touch Optimizations
+
+### Tap Targets
+
+Ensure minimum 44x44px tap targets:
+
+```tsx
+<Button className="min-h-[44px] min-w-[44px]">
+  <Icon />
+</Button>
+```
+
+### Touch Gestures (Framer Motion)
+
+```tsx ActivityPanel.tsx
+<motion.div
+  drag="y"
+  dragConstraints={{ top: 0, bottom: 0 }}
+  dragElastic={0}
+  onDragEnd={handleDragEnd}
+>
+  {/* Swipeable panel */}
+</motion.div>
+```
+
+---
+
+## Responsive Spacing
+
+```tsx
+<div className="p-4 sm:p-6 md:p-8">
+  <div className="space-y-4 sm:space-y-6">
+    {/* Content */}
+  </div>
+</div>
+```
+
+---
+
+## Mobile-Specific Patterns
+
+### Prevent Double-Tap Zoom
+
+```css
+button, a {
+  touch-action: manipulation;
+}
+```
+
+### Smooth Scroll
+
+```css
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+```
+
+---
+
+## Testing Checklist
+
+<AccordionGroup>
+  <Accordion title="Keyboard Interaction">
+    - [ ] Input stays visible when keyboard appears
+    - [ ] No auto-zoom on input focus
+    - [ ] Can scroll to see all content
+    - [ ] Safe area insets respected
+  </Accordion>
+
+  <Accordion title="Touch Gestures">
+    - [ ] Swipe gestures work smoothly
+    - [ ] No accidental double-tap zoom
+    - [ ] Tap targets are adequate size
+    - [ ] Hover states don't get "stuck"
+  </Accordion>
+
+  <Accordion title="Viewport">
+    - [ ] Content doesn't shift with browser chrome
+    - [ ] No horizontal scroll
+    - [ ] Notched devices handled correctly
+    - [ ] Works in portrait and landscape
+  </Accordion>
+</AccordionGroup>
+
+<Card title="Chat Implementation" icon="messages" href="/features/leo-ai">
+  See the mobile-optimized chat interface in action
+</Card>
