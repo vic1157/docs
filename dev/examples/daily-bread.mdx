@@ -1,0 +1,213 @@
+---
+title: 'OurDailyBread Component'
+description: 'Sequential unlock pattern with daily reset logic'
+icon: 'bread-slice'
+---
+
+## Component Overview
+
+OurDailyBread implements a sequential unlock pattern where activities become available one after another.
+
+**File**: `src/components/OurDailyBread.tsx`
+
+---
+
+## Key Implementation Details
+
+### Sequential Unlock Pattern
+
+```tsx
+// Determine unlock states
+const isScrollUnlocked = verseRead;
+const isQuizUnlocked = scrollCompleted;
+
+// Visual feedback
+<div className={cn(
+  "relative transition-all duration-500",
+  !isScrollUnlocked && "opacity-40 pointer-events-none"
+)}>
+  {/* Scroll of the Day card */}
+</div>
+```
+
+### Journey Markers
+
+```tsx
+<div className={cn(
+  "absolute -left-14 top-6 w-10 h-10 rounded-full border-2 flex items-center justify-center",
+  scrollCompleted
+    ? "bg-foreground border-foreground"           // Completed
+    : isScrollUnlocked
+    ? "bg-background border-foreground animate-pulse"  // Unlocked
+    : "bg-background border-muted-foreground/30"  // Locked
+)}>
+  {scrollCompleted ? (
+    <Check className="h-5 w-5 text-background" />
+  ) : isScrollUnlocked ? (
+    <Scroll className="h-5 w-5 text-foreground" />
+  ) : (
+    <Lock className="h-5 w-5 text-muted-foreground/50" />
+  )}
+</div>
+```
+
+### Props and State Management
+
+```tsx
+interface OurDailyBreadProps {
+  scrollCompleted?: boolean;
+  quizCompleted?: boolean;
+}
+
+const OurDailyBread = ({ 
+  scrollCompleted = false, 
+  quizCompleted = false 
+}: OurDailyBreadProps) => {
+  const [verseRead, setVerseRead] = useState(false);
+
+  // Update internal state when scroll is completed
+  useEffect(() => {
+    if (scrollCompleted) {
+      setVerseRead(true);  // If scroll done, verse must be read
+    }
+  }, [scrollCompleted]);
+
+  return (
+    // Component JSX
+  );
+};
+```
+
+---
+
+## Navigation Flow
+
+```tsx
+const handleMarkAsRead = () => {
+  setVerseRead(true);  // Unlocks Scroll of the Day
+};
+
+const handleStartScroll = () => {
+  navigate("/daily-scroll");
+};
+
+const handleStartQuiz = () => {
+  navigate("/daily-quiz");
+};
+```
+
+---
+
+## Visual Timeline Design
+
+### Vertical Path Line
+
+```tsx
+<div className="relative pl-14 space-y-10">
+  {/* Gradient vertical line connecting all activities */}
+  <div className="absolute left-5 top-6 bottom-6 w-[2px] bg-gradient-to-b from-foreground via-foreground/50 to-foreground/20" />
+  
+  {/* Activities */}
+</div>
+```
+
+### Card Layout
+
+```tsx
+<div className="bg-card/50 backdrop-blur border border-border/50 rounded-2xl p-5 shadow-sm space-y-4">
+  <h3 className="font-semibold text-lg">Verse of the Day</h3>
+  
+  <div className="border-l-4 border-foreground pl-4 py-2">
+    <p className="text-sm">{DAILY_VERSE.text}</p>
+    <p className="text-sm text-muted-foreground">{DAILY_VERSE.reference}</p>
+  </div>
+
+  <Button
+    onClick={handleMarkAsRead}
+    disabled={verseRead}
+    className={cn(
+      "w-full rounded-full",
+      verseRead && "bg-foreground/10 text-foreground cursor-default"
+    )}
+  >
+    {verseRead ? (
+      <><Check className="mr-2" /> Read</>
+    ) : (
+      "Mark as Read"
+    )}
+  </Button>
+</div>
+```
+
+---
+
+## Daily Bread Data
+
+```typescript
+const DAILY_VERSE: DailyVerse = {
+  text: '"For I know the plans I have for you," declares the LORD...',
+  reference: "Jeremiah 29:11"
+};
+
+const DAILY_SCROLL: DailyScrollData = {
+  title: "God's Plans for Your Future",
+  passage: "Jeremiah 29:10-14",
+  description: "Discover God's promises...",
+  estimatedTime: "3-4 min",
+  verseCount: 5
+};
+```
+
+---
+
+## Usage in Home Page
+
+```tsx Index.tsx
+import { useEffect, useState } from "react";
+import OurDailyBread from "@/components/OurDailyBread";
+
+export default function Index() {
+  const [dailyScrollCompleted, setDailyScrollCompleted] = useState(false);
+  const [dailyQuizCompleted, setDailyQuizCompleted] = useState(false);
+
+  useEffect(() => {
+    // Check localStorage for completion status
+    const scrollDone = localStorage.getItem('dailyScrollCompleted') === 'true';
+    const quizDone = localStorage.getItem('dailyQuizCompleted') === 'true';
+    
+    setDailyScrollCompleted(scrollDone);
+    setDailyQuizCompleted(quizDone);
+
+    // Daily reset logic
+    const today = new Date().toDateString();
+    const storedDate = localStorage.getItem('dailyBreadDate');
+    
+    if (storedDate !== today) {
+      localStorage.setItem('dailyBreadDate', today);
+      localStorage.removeItem('dailyScrollCompleted');
+      localStorage.removeItem('dailyQuizCompleted');
+      setDailyScrollCompleted(false);
+      setDailyQuizCompleted(false);
+    }
+  }, []);
+
+  return (
+    <div>
+      {dailyScrollCompleted && dailyQuizCompleted && (
+        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg">
+          <p className="text-2xl font-bold">🎉 Daily Bread Complete!</p>
+        </div>
+      )}
+
+      <OurDailyBread
+        scrollCompleted={dailyScrollCompleted}
+        quizCompleted={dailyQuizCompleted}
+      />
+    </div>
+  );
+}
+```
+
+<Card title="Our Daily Bread Feature" icon="calendar" href="/features/our-daily-bread">
+  View the complete feature documentation
+</Card>

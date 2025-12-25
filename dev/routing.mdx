@@ -1,0 +1,166 @@
+---
+title: 'Routing'
+description: 'React Router setup and navigation patterns'
+icon: 'route'
+---
+
+## Router Configuration
+
+RYB uses React Router DOM 6.30.1 for client-side routing with 31 total routes.
+
+## All Routes
+
+<AccordionGroup>
+  <Accordion title="Authentication (5 routes)">
+    - `/` - Loading splash screen
+    - `/login` - Login page
+    - `/signup` - Registration page
+    - `/verify-email` - Email verification
+    - `/email-confirmed` - Confirmation success
+  </Accordion>
+
+  <Accordion title="Onboarding (7 routes)">
+    - `/survey` - 10-question spiritual assessment
+    - `/survey-results` - Persona reveal
+    - `/paywall` - Pricing and monetization
+    - `/profile` - User profile (with `?onboarding=true`)
+    - `/reading-goals` - Reading goals (with `?onboarding=true`)
+    - `/scroll-walkthrough` - 8-step interactive tour
+    - `/demo-scroll` - Hands-on demo scroll
+  </Accordion>
+
+  <Accordion title="Core Features (4 routes)">
+    - `/home` - Home page with stats and daily bread
+    - `/read` - Bible reading engine
+    - `/community` - Community preview
+    - `/scripture-explorer` - Scripture hub
+  </Accordion>
+
+  <Accordion title="Scripture Interaction (6 routes)">
+    - `/chat` - Leo AI chat interface
+    - `/chat?id={chatId}` - Existing chat conversation
+    - `/new-quiz` - Quiz selection page
+    - `/scroll/:id` - Scroll detail view
+    - `/scroll/:id?startQuiz=true` - Quiz taking
+    - `/daily-scroll` - Daily Bread scroll
+    - `/daily-quiz` - Daily Bread quiz
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## URL Parameter Patterns
+
+### Onboarding Trigger
+
+```typescript
+// Navigate with parameter to trigger onboarding modal
+navigate("/profile?onboarding=true");
+
+// Check parameter in component
+const searchParams = new URLSearchParams(location.search);
+const isOnboarding = searchParams.get("onboarding") === "true";
+
+if (isOnboarding) {
+  setShowOnboardingModal(true);
+}
+```
+
+### Auto-start Quiz
+
+```typescript
+// Navigate to scroll with auto-start quiz
+navigate(\`/scroll/\${scrollId}?startQuiz=true\`);
+
+// Check parameter in ScrollDetail component
+const [searchParams] = useSearchParams();
+const shouldStartQuiz = searchParams.get("startQuiz") === "true";
+```
+
+### Chat ID Parameter
+
+```typescript
+// Load specific chat
+navigate(\`/chat?id=\${chatId}\`);
+
+// Access in Chat component
+const [searchParams] = useSearchParams();
+const chatId = searchParams.get("id");
+```
+
+---
+
+## Navigation State
+
+### Passing State Between Routes
+
+```typescript
+// Navigate with state
+navigate("/home", {
+  state: { dailyScrollCompleted: true }
+});
+
+// Access state in destination
+const location = useLocation();
+const { dailyScrollCompleted } = location.state || {};
+```
+
+---
+
+## Router Setup
+
+```typescript App.tsx
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Loading />} />
+            <Route path="/login" element={<Login />} />
+            {/* ... 29 more routes */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+}
+```
+
+---
+
+## Navigation Helpers
+
+### useNavigate Hook
+
+```typescript
+import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
+
+// Simple navigation
+navigate("/home");
+
+// With state
+navigate("/home", { state: { fromOnboarding: true } });
+
+// With replace (no history entry)
+navigate("/home", { replace: true });
+```
+
+### Link Component
+
+```tsx
+import { Link } from "react-router-dom";
+
+<Link to="/profile" className="...">
+  Go to Profile
+</Link>
+```
+
+<Card title="State Management" icon="database" href="/dev/state-management">
+  See how routing works with state management
+</Card>

@@ -1,0 +1,196 @@
+---
+title: 'Our Daily Bread'
+description: 'Daily spiritual journey with sequential activities'
+icon: 'bread-slice'
+---
+
+<Note>
+  **Feature Status:** Fully implemented with localStorage persistence and automatic daily reset
+</Note>
+
+## Overview
+
+Our Daily Bread is a core daily engagement feature on the home page that guides users through three sequential activities for structured Bible engagement.
+
+<CardGroup cols={3}>
+  <Card title="Verse of the Day" icon="book-open">
+    Always unlocked - starts the journey
+  </Card>
+  <Card title="Scroll of the Day" icon="scroll">
+    Unlocks after reading the verse
+  </Card>
+  <Card title="Quiz of the Day" icon="circle-question">
+    Unlocks after completing the scroll
+  </Card>
+</CardGroup>
+
+## Journey Design
+
+<Accordion title="Visual Design">
+  - **Vertical timeline** with circular journey markers
+  - **Gradient path line** connecting activities
+  - **Card layout** for each activity
+  - **Progressive unlock** pattern
+</Accordion>
+
+### Journey Markers
+
+| State | Visual |
+|-------|--------|
+| **Unlocked** | Filled circle with icon |
+| **Completed** | Filled circle with checkmark |
+| **Locked** | Hollow circle with lock icon (pulsing when newly unlocked) |
+
+---
+
+## Activity Flow
+
+<Steps>
+  <Step title="Verse of the Day">
+    **Always Unlocked**
+
+    - Static daily verse with left-border accent
+    - Current: Jeremiah 29:11
+    - "Mark as Read" button unlocks Scroll of the Day
+
+    ```
+    "For I know the plans I have for you," declares the LORD,
+    "plans to prosper you and not to harm you, plans to give
+    you hope and a future."
+    ```
+  </Step>
+
+  <Step title="Scroll of the Day">
+    **Unlocks after reading verse**
+
+    - Based on expanded context of daily verse
+    - Current: Jeremiah 29:10-14 - "God's Plans for Your Future"
+    - Details:
+      - Passage: Jeremiah 29:10-14
+      - Description: "Discover God's promises of hope and a future"
+      - Estimated Time: 3-4 min
+      - Verse Count: 5 verses
+    - "Start Scroll →" button navigates to `/daily-scroll`
+  </Step>
+
+  <Step title="Quiz of the Day">
+    **Unlocks after completing scroll**
+
+    - 5-question multiple choice quiz
+    - Current: Questions on Jeremiah 29:10-14
+    - Topics:
+      - God's plans for prosperity and hope (v.11)
+      - Length of exile (70 years, v.10)
+      - Seeking God with all your heart (v.13)
+      - God listening to prayers (v.12)
+      - Restoration of fortunes (v.14)
+    - "Start Quiz →" button navigates to `/daily-quiz`
+  </Step>
+</Steps>
+
+---
+
+## Daily Scroll Page
+
+Complete scroll interface at `/daily-scroll`:
+
+<AccordionGroup>
+  <Accordion title="Scroll Header">
+    - Passage title
+    - Verse range
+    - Estimated time
+  </Accordion>
+
+  <Accordion title="Expandable Summary">
+    - AI-generated chapter summary
+    - "Show More/Less" button
+  </Accordion>
+
+  <Accordion title="Questions Section">
+    - Understanding category
+    - Discussion category
+    - HelpCircle popover for explanations
+  </Accordion>
+
+  <Accordion title="Personal Reflection">
+    - Textarea for user notes
+  </Accordion>
+
+  <Accordion title="Visibility Settings">
+    - Private
+    - Friends Only
+    - Public (radio buttons)
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Daily Quiz Page
+
+Interactive quiz experience at `/daily-quiz`:
+
+<Tabs>
+  <Tab title="Quiz Taking">
+    - Progress bar and question counter
+    - Multiple choice with A/B/C/D letter badges
+    - Circular letter indicators
+    - Previous/Next navigation
+    - Scripture references for each question
+  </Tab>
+
+  <Tab title="Results View">
+    - Large percentage score display
+    - "Review Your Answers" section
+    - Color-coded feedback:
+      - ✅ Correct: Green background, green border
+      - ❌ Incorrect: Red background, red border
+    - Explanation boxes with verse references
+    - "Complete Quiz" button returns to home
+  </Tab>
+</Tabs>
+
+---
+
+## Completion Celebration
+
+When all three activities are completed:
+
+- 🎉 Green gradient background with star watermark
+- "Daily Bread Complete!" headline
+- "You've completed today's verse, scroll, and quiz. Well done!"
+- "Come back tomorrow for new content"
+- Appears above Our Daily Bread component
+
+---
+
+## State Management
+
+<CodeGroup>
+
+```typescript localStorage Keys
+dailyBreadDate          // Current date for reset logic
+dailyScrollCompleted    // Scroll completion state
+dailyQuizCompleted      // Quiz completion state
+```
+
+```typescript Daily Reset Logic
+const today = new Date().toDateString();
+const storedDate = localStorage.getItem('dailyBreadDate');
+
+if (storedDate !== today) {
+  // New day detected - reset completion states
+  localStorage.setItem('dailyBreadDate', today);
+  localStorage.removeItem('dailyScrollCompleted');
+  localStorage.removeItem('dailyQuizCompleted');
+}
+```
+
+</CodeGroup>
+
+<Tip>
+  State automatically resets when the date changes, ensuring fresh content daily
+</Tip>
+
+<Card title="Component Code" icon="code" href="/dev/examples/daily-bread">
+  View the OurDailyBread component implementation
+</Card>

@@ -1,0 +1,222 @@
+---
+title: 'Theme System'
+description: 'Light/dark mode implementation with React context'
+icon: 'moon'
+---
+
+## Theme System Overview
+
+RYB implements a comprehensive light/dark mode system using React Context and CSS variables.
+
+<CardGroup cols={2}>
+  <Card title="ThemeProvider" icon="palette">
+    React Context for theme state
+  </Card>
+  <Card title="CSS Variables" icon="code">
+    HSL-based design tokens
+  </Card>
+  <Card title="localStorage" icon="save">
+    Persistent theme preference
+  </Card>
+  <Card title="System Preference" icon="computer">
+    Respects prefers-color-scheme
+  </Card>
+</CardGroup>
+
+---
+
+## Implementation
+
+### ThemeProvider Hook
+
+```typescript use-theme.tsx
+import { createContext, useContext, useEffect, useState } from "react";
+
+type Theme = "light" | "dark";
+
+interface ThemeContextType {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(() => {
+    // Check localStorage first
+    const stored = localStorage.getItem("theme") as Theme;
+    if (stored) return stored;
+
+    // Fall back to system preference
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+
+  useEffect(() => {
+    // Persist to localStorage
+    localStorage.setItem("theme", theme);
+
+    // Update DOM class for CSS
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === "light" ? "dark" : "light");
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) throw new Error("useTheme must be used within ThemeProvider");
+  return context;
+}
+```
+
+---
+
+## App Setup
+
+```tsx App.tsx
+import { ThemeProvider } from "@/hooks/use-theme";
+
+function App() {
+  return (
+    <ThemeProvider>
+      <BrowserRouter>
+        {/* App routes */}
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+}
+```
+
+---
+
+## CSS Variables
+
+### Light Theme
+
+```css :root (index.css)
+:root {
+  --background: 234 20% 98%;
+  --foreground: 234 40% 25%;
+  --primary: 234 40% 25%;
+  --secondary: 45 80% 65%;
+  --muted: 234 20% 90%;
+  --accent: 45 100% 50%;
+}
+```
+
+### Dark Theme
+
+```css .dark (index.css)
+.dark {
+  --background: 234 20% 8%;     /* 8% lightness */
+  --foreground: 234 50% 60%;
+  --primary: 234 50% 60%;
+  --secondary: 45 80% 65%;
+  --muted: 234 20% 15%;
+  --accent: 45 100% 60%;
+}
+```
+
+<Note>
+  Dark mode uses 8% background lightness for a middle-ground darkness (not pure black)
+</Note>
+
+---
+
+## Usage in Components
+
+### Theme Toggle Button
+
+```tsx Index.tsx
+import { useTheme } from "@/hooks/use-theme";
+import { Sun, Moon } from "lucide-react";
+
+export default function Index() {
+  const { theme, toggleTheme } = useTheme();
+
+  return (
+    <button onClick={toggleTheme}>
+      {theme === "light" ? (
+        <Moon className="h-5 w-5" />
+      ) : (
+        <Sun className="h-5 w-5" />
+      )}
+    </button>
+  );
+}
+```
+
+### Using Theme Colors
+
+```tsx
+<div className="bg-background text-foreground">
+  <h1 className="text-primary">Heading</h1>
+  <p className="text-muted-foreground">Muted text</p>
+</div>
+```
+
+---
+
+## HSL Color System
+
+Colors use HSL (Hue, Saturation, Lightness) for easy theme adjustments:
+
+```css
+/* Format: hue saturation% lightness% */
+--primary: 234 40% 25%;
+
+/* Usage in Tailwind */
+background-color: hsl(var(--primary));
+
+/* With opacity */
+background-color: hsl(var(--primary) / 0.5);
+```
+
+---
+
+## Benefits
+
+<AccordionGroup>
+  <Accordion title="Persistent Preference">
+    - Saves to localStorage
+    - Remembers user choice across sessions
+    - No flash of wrong theme on load
+  </Accordion>
+
+  <Accordion title="System Preference Support">
+    - Respects `prefers-color-scheme`
+    - Automatic theme on first visit
+    - Works without localStorage
+  </Accordion>
+
+  <Accordion title="Easy Customization">
+    - HSL values easy to adjust
+    - Change entire theme by modifying variables
+    - Semantic token names
+  </Accordion>
+
+  <Accordion title="Type-Safe">
+    - TypeScript types for theme values
+    - Context ensures proper usage
+    - Compile-time error checking
+  </Accordion>
+</AccordionGroup>
+
+<Card title="Styling System" icon="paintbrush" href="/dev/styling">
+  Learn more about the complete styling system
+</Card>

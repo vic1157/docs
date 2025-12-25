@@ -1,0 +1,66 @@
+---
+title: 'Onboarding System'
+description: 'Complete user onboarding journey from survey to first reading'
+icon: 'user-plus'
+---
+
+## Overview
+
+The RYB onboarding system guides users through a comprehensive journey to personalize their Bible reading experience.
+
+<CardGroup cols={2}>
+  <Card title="Survey System" icon="clipboard-list" href="/features/survey-system">
+    10-question spiritual assessment
+  </Card>
+  <Card title="Profile Setup" icon="user" href="/features/profile-setup">
+    Photo upload and testimony
+  </Card>
+  <Card title="Reading Goals" icon="target" href="/features/profile-setup">
+    Set frequency and notifications
+  </Card>
+  <Card title="Scroll Walkthrough" icon="graduation-cap" href="/features/scroll-walkthrough">
+    Interactive 8-step tour
+  </Card>
+</CardGroup>
+
+## Onboarding Flow
+
+<Steps>
+  <Step title="Spiritual Assessment">
+    User completes 10-question survey to determine their Biblical persona
+  </Step>
+  <Step title="Persona Reveal">
+    Display assigned persona with strengths and recommendations
+  </Step>
+  <Step title="Profile Creation">
+    Upload photo and add personal testimony (2-step modal)
+  </Step>
+  <Step title="Reading Goals">
+    Set reading frequency and enable notifications (2-step modal)
+  </Step>
+  <Step title="Scroll Walkthrough">
+    Learn about Scrolls through interactive 8-step tour
+  </Step>
+  <Step title="Demo Scroll">
+    Hands-on experience with fully interactive scroll
+  </Step>
+</Steps>
+
+## Progress Tracking
+
+The home page features an OnboardingProgress component that tracks completion:
+
+1. ✓ Complete Your Profile
+2. ✓ Set Your Reading Goals
+3. ✓ RYB Scroll Walkthrough
+4. Complete Your First Reading
+5. Ask Leo Your First Question
+6. Take Your First Quiz
+
+<Tip>
+  All onboarding states are persisted in localStorage with automatic progress updates
+</Tip>
+
+<Card title="Implementation Pattern" icon="code" href="/dev/onboarding-pattern">
+  View the reusable onboarding flow pattern
+</Card>

@@ -1,0 +1,86 @@
+---
+title: 'Scroll Walkthrough'
+description: '8-step interactive tour explaining the Scroll concept'
+icon: 'graduation-cap'
+---
+
+## Interactive Feature Tour
+
+Full-screen walkthrough introducing users to Scrolls with progress indicators and interactive demo elements.
+
+## 8-Step Journey
+
+<Steps>
+  <Step title="Welcome & Introduction">
+    Overview of what Scrolls are and their purpose
+  </Step>
+
+  <Step title="Scroll Overview">
+    Reading session metadata: passage, time estimate, verse count
+  </Step>
+
+  <Step title="AI-Generated Summary">
+    - Expandable AI summary with demo text
+    - Chapter context and themes
+    - Show More/Less button demonstration
+  </Step>
+
+  <Step title="Questions Feature">
+    - Understanding & Discussion question categories
+    - Example questions with type definitions
+    - HelpCircle popover explaining question types
+  </Step>
+
+  <Step title="Capture Questions">
+    - Mock interactive Activity Panel
+    - Demonstrates "Add Question" flow
+    - Shows how to engage with Scripture during reading
+  </Step>
+
+  <Step title="Personal Reflection">
+    - Journaling textarea
+    - Visibility settings (Private, Friends Only, Public)
+    - Entire scroll privacy controls
+  </Step>
+
+  <Step title="Starting a Scroll">
+    - Explains metrics and tracking
+    - Entry points (during Bible reading)
+    - Active vs Inactive reading modes
+  </Step>
+
+  <Step title="Complete & Ready">
+    - Recap of Scroll features
+    - Two CTA options:
+      - "Try Demo Scroll" → `/demo-scroll`
+      - "Back to Home" → `/home`
+  </Step>
+</Steps>
+
+## Interactive Elements
+
+<CardGroup cols={2}>
+  <Card title="Expandable Summary" icon="chevron-down">
+    Working Show More/Less button with demo text
+  </Card>
+  <Card title="Question Categories" icon="circle-question">
+    Understanding & Discussion with HelpCircle popover
+  </Card>
+  <Card title="Activity Panel Mock" icon="panel-bottom">
+    Interactive demo of "Add Question" flow
+  </Card>
+  <Card title="Visibility Settings" icon="eye">
+    Radio button selectors for privacy levels
+  </Card>
+</CardGroup>
+
+## Completion Flow
+
+After finishing the walkthrough:
+- Marks completion in localStorage (`scrollWalkthroughComplete`)
+- Dispatches `onboardingComplete` event
+- User chooses next step (Demo Scroll or Home)
+
+<Card title="Demo Scroll" icon="scroll" href="/features/scrolls">
+  Try the fully interactive demo scroll experience
+</Card>

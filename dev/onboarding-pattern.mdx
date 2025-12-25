@@ -1,0 +1,231 @@
+---
+title: 'Onboarding Flow Pattern'
+description: 'Reusable pattern for multi-step onboarding modals'
+icon: 'route'
+---
+
+## Pattern Overview
+
+RYB uses a consistent pattern for all onboarding flows that combines URL parameters, localStorage persistence, and custom events.
+
+<Steps>
+  <Step title="User clicks task">
+    OnboardingProgress component detects click
+  </Step>
+  <Step title="Navigate with ?onboarding=true">
+    URL parameter triggers modal display
+  </Step>
+  <Step title="Show multi-step modal">
+    Progress indicators, navigation buttons
+  </Step>
+  <Step title="Save to localStorage">
+    Persist completion with specific key
+  </Step>
+  <Step title="Dispatch custom event">
+    Notify other components of completion
+  </Step>
+  <Step title="Navigate to home">
+    Redirect after completion
+  </Step>
+  <Step title="Auto-update UI">
+    OnboardingProgress updates via event listener
+  </Step>
+</Steps>
+
+---
+
+## Implementation Example
+
+### Profile Onboarding
+
+<CodeGroup>
+
+```tsx Detect Onboarding Mode
+// Profile.tsx
+const searchParams = new URLSearchParams(location.search);
+const isOnboarding = searchParams.get("onboarding") === "true";
+
+const [showOnboardingModal, setShowOnboardingModal] = useState(isOnboarding);
+```
+
+```tsx Handle Completion
+const handleComplete = () => {
+  // Save completion
+  localStorage.setItem("profileOnboardingComplete", "true");
+
+  // Notify other components
+  window.dispatchEvent(new Event("onboardingComplete"));
+
+  // Navigate home
+  navigate("/home");
+};
+```
+
+```tsx Modal Structure
+{showOnboardingModal && (
+  <div className="fixed inset-0 bg-background/95 z-50">
+    {step === 1 && <PhotoUploadStep onNext={() => setStep(2)} />}
+    {step === 2 && <TestimonyStep onComplete={handleComplete} />}
+  </div>
+)}
+```
+
+</CodeGroup>
+
+---
+
+## localStorage Keys
+
+<ResponseField name="profileOnboardingComplete" type="string">
+  Set to "true" when profile setup is complete
+</ResponseField>
+
+<ResponseField name="readingGoalsOnboardingComplete" type="string">
+  Set to "true" when reading goals are configured
+</ResponseField>
+
+<ResponseField name="scrollWalkthroughComplete" type="string">
+  Set to "true" when scroll walkthrough is finished
+</ResponseField>
+
+---
+
+## Event Communication
+
+### Dispatch Event
+
+```typescript
+// In onboarding page after completion
+window.dispatchEvent(new Event("onboardingComplete"));
+```
+
+### Listen for Event
+
+```typescript OnboardingProgress.tsx
+useEffect(() => {
+  const handleStorageChange = () => {
+    // Re-check localStorage and update state
+    const tasks = [
+      localStorage.getItem("profileOnboardingComplete") === "true",
+      localStorage.getItem("readingGoalsOnboardingComplete") === "true",
+      localStorage.getItem("scrollWalkthroughComplete") === "true"
+    ];
+    setCompletedTasks(tasks);
+  };
+
+  window.addEventListener("storage", handleStorageChange);
+  window.addEventListener("onboardingComplete", handleStorageChange);
+
+  return () => {
+    window.removeEventListener("storage", handleStorageChange);
+    window.removeEventListener("onboardingComplete", handleStorageChange);
+  };
+}, []);
+```
+
+---
+
+## Modal Pattern
+
+Multi-step modals follow this structure:
+
+<AccordionGroup>
+  <Accordion title="Progress Indicators">
+    Visual bars showing current step out of total steps
+  </Accordion>
+
+  <Accordion title="Navigation Controls">
+    - Skip/Next/Complete buttons
+    - Disabled state until required fields filled
+    - Back button (optional, depends on flow)
+  </Accordion>
+
+  <Accordion title="Form Validation">
+    - Required field checks
+    - Error messaging
+    - Prevent progression without valid data
+  </Accordion>
+
+  <Accordion title="Clean Exit Flows">
+    - Handle modal dismissal gracefully
+    - Save partial progress (optional)
+    - Clear way to skip onboarding
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## URL Parameter Routes
+
+<Card title="Onboarding Routes">
+  - `/profile?onboarding=true` - Profile onboarding flow
+  - `/reading-goals?onboarding=true` - Goals onboarding flow
+  - `/scroll-walkthrough` - Scroll concept walkthrough (no parameter needed)
+</Card>
+
+---
+
+## Complete Pattern Implementation
+
+```tsx OnboardingProgress.tsx
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Check } from "lucide-react";
+
+const tasks = [
+  { id: "profile", title: "Complete Your Profile", route: "/profile?onboarding=true" },
+  { id: "goals", title: "Set Your Reading Goals", route: "/reading-goals?onboarding=true" },
+  { id: "walkthrough", title: "RYB Scroll Walkthrough", route: "/scroll-walkthrough" }
+];
+
+export default function OnboardingProgress() {
+  const navigate = useNavigate();
+  const [completedTasks, setCompletedTasks] = useState([false, false, false]);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const tasks = [
+        localStorage.getItem("profileOnboardingComplete") === "true",
+        localStorage.getItem("readingGoalsOnboardingComplete") === "true",
+        localStorage.getItem("scrollWalkthroughComplete") === "true"
+      ];
+      setCompletedTasks(tasks);
+    };
+
+    handleStorageChange(); // Initial check
+
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("onboardingComplete", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("onboardingComplete", handleStorageChange);
+    };
+  }, []);
+
+  return (
+    <Card>
+      {tasks.map((task, index) => (
+        <Button
+          key={task.id}
+          onClick={() => navigate(task.route)}
+          disabled={completedTasks[index]}
+        >
+          {completedTasks[index] && <Check className="mr-2" />}
+          {task.title}
+        </Button>
+      ))}
+    </Card>
+  );
+}
+```
+
+<Tip>
+  This pattern enables real-time cross-component communication without prop drilling or complex state management
+</Tip>
+
+<Card title="Code Example" icon="code" href="/dev/examples/onboarding-progress">
+  View the complete OnboardingProgress component
+</Card>
